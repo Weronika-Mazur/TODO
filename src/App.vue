@@ -1,26 +1,120 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="background-img"></div>
+  <div class="container">
+    <header>
+      <h1>TODO</h1>
+      <button class="toggle-mode">
+        <img src="./assets/icon-sun.svg" />
+      </button>
+    </header>
+    <main>
+      <TaskCreator @addItem="addNewItem"></TaskCreator>
+      <TaskList
+        :addNewItem="buttonPressed"
+        :newItemText="text"
+        ref="A"
+      ></TaskList>
+    </main>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TaskCreator from "./components/TaskCreator.vue";
+import TaskList from "./components/TaskList.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    TaskCreator,
+    TaskList,
+  },
+  data() {
+    return {
+      mode: "dark",
+      buttonPressed: false,
+      text: "",
+    };
+  },
+  methods: {
+    addNewItem(text) {
+      this.text = text;
+      this.buttonPressed = !this.buttonPressed;
+    },
+  },
+};
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Poppins:wght@500;700&display=swap");
+
+:root {
+  --bright-blue: hsl(220, 98%, 61%);
+  --check-background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+
+  --very-light-grey: hsl(0, 0%, 98%);
+  --very-light-grayish-blue: hsl(236, 33%, 92%);
+  --light-grayish-blue: hsl(233, 11%, 84%);
+  --dark-grayish-blue: hsl(236, 9%, 61%);
+  --very-dark-grayish-blue: hsl(235, 19%, 35%);
+
+  --very-dark-blue: hsl(235, 21%, 11%);
+  --very-dark-desaturated-blue: hsl(235, 24%, 19%);
+  --light-grayish-blue-dark-mode: hsl(234, 39%, 85%);
+  --light-grayish-blue-hover: hsl(236, 33%, 92%);
+  --dark-grayish-blue-dark-mode: hsl(234, 11%, 52%);
+  --very-dark-grayish-blue-dark-mode: hsl(233, 14%, 35%);
+  --very-dark-grayish-blue-dark-mode-second: hsl(237, 14%, 26%);
+}
+
+body {
+  background-color: var(--very-dark-blue);
+  position: relative;
+  color: white;
+  margin: 0;
+}
+
+.background-img {
+  background-image: url("./assets/bg-desktop-dark.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  height: 300px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  margin: 0;
+  padding: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: "Josefin Sans", sans-serif;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header {
+  display: flex;
+  align-items: space-between;
+  justify-content: space-between;
+}
+
+header h1 {
+  font-size: 42px;
+  letter-spacing: 12px;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.container {
+  width: 540px;
+  margin-top: 80px;
 }
 </style>
