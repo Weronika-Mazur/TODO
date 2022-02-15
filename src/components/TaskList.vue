@@ -1,27 +1,23 @@
 <template>
   <article class="task-list">
-    <section class="task-list-items" v-for="(task, index) in taskArray">
+    <section class="task-list-items" v-for="task in taskArray">
       <TaskItem
         :state="task.state"
         :content="task.content"
         :key="task.id"
         @toggleState="toggleItemState(task)"
-        @deleteTask="deleteTaskItem(index)"
-      ></TaskItem>
+        @deleteTask="deleteTaskItem(task.id)"
+      />
     </section>
     <section class="nav-bar">
-      <p>{{ itemsLeft }} items left</p>
-      <ul class="nav-bar-filter" @click="changeFilter">
-        <li :class="{ 'nav-bar-filter-active': this.taskFilter === 'all' }">
-          All
-        </li>
-        <li :class="{ 'nav-bar-filter-active': this.taskFilter === 'active' }">
-          Active
-        </li>
+      <p>{{ itemsLeft }}</p>
+      <ul class="nav-bar-filter">
         <li
-          :class="{ 'nav-bar-filter-active': this.taskFilter === 'completed' }"
+          v-for="filter in filterArray"
+          :class="{ 'nav-bar-filter-active': isActiveFilter(filter.type) }"
+          @click="setFilter(filter.type)"
         >
-          Completed
+          {{ filter.desc }}
         </li>
       </ul>
       <p @click="clearCompleted" class="nav-bar-clear-completed">
@@ -36,77 +32,50 @@ import TaskItem from "./TaskItem.vue";
 
 export default {
   name: "TaskList",
-  props: ["addNewItem", "newItemText"],
+  props: ["taskArray", "taskFilter", "itemsCounter"],
   components: {
     TaskItem,
   },
   data() {
     return {
-      taskArrayAll: [
-        { content: "Do shopping", id: 1, state: "active" },
-        { content: "Clean up", id: 2, state: "active" },
-        { content: "Eat lunch", id: 3, state: "completed" },
+      filterArray: [
         {
-          content:
-            "jnkjewnfkjew jfnwkjenfkjwe fnwjenf jjdwkjdkew jnwkdjnkewndknjew jdnwkjendkewndjw ndjwnekdnjewkdnew jdnwkjendkjewn ndjwneknw",
-          id: 4,
-          state: "active",
+          type: "all",
+          desc: "All",
+        },
+        {
+          type: "active",
+          desc: "Active",
+        },
+        {
+          type: "completed",
+          desc: "Completed",
         },
       ],
-      taskFilter: "all",
-      idCount: 5,
     };
   },
   methods: {
     toggleItemState(task) {
-      if (task.state == "active") {
-        task.state = "completed";
-      } else {
-        task.state = "active";
-      }
+      task.state === "active"
+        ? (task.state = "completed")
+        : (task.state = "active");
     },
-    deleteTaskItem(index) {
-      this.taskArrayAll.splice(index, 1);
+    deleteTaskItem(taskId) {
+      this.$emit("deleteTask", taskId);
     },
-    changeFilter(e) {
-      if (e.tartget !== e.currentTarget) {
-        this.taskFilter = e.target.textContent.toLowerCase().replace(/\s/g, "");
-      }
-      console.log(this.taskFilter);
+    isActiveFilter(filterType) {
+      return this.taskFilter === filterType;
+    },
+    setFilter(filterType) {
+      this.$emit("changeFilter", filterType);
     },
     clearCompleted() {
-      this.taskArrayAll = this.taskArrayAll.filter(
-        (task) => task.state === "active"
-      );
-    },
-    addTask(taskContent) {
-      this.taskArrayAll.push({
-        content: taskContent,
-        id: this.idCount,
-        state: "active",
-      });
-      this.idCount++;
+      this.$emit("clearComplited");
     },
   },
   computed: {
-    taskArray() {
-      if (this.taskFilter === "all") {
-        return this.taskArrayAll;
-      } else {
-        return this.taskArrayAll.filter(
-          (task) => task.state === this.taskFilter
-        );
-      }
-    },
     itemsLeft() {
-      return this.taskArrayAll.filter((task) => task.state === "active").length;
-    },
-  },
-  watch: {
-    addNewItem(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.addTask(this.newItemText);
-      }
+      return `${this.itemsCounter} items left`;
     },
   },
 };

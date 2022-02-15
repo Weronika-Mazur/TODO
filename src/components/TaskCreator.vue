@@ -2,7 +2,7 @@
   <div class="task-creator">
     <button class="check-button" @click="addItemToTaskList">
       <div class="check-circle">
-        <img src="./../assets/icon-check.svg" />
+        <CheckIcon />
       </div>
     </button>
     <input
@@ -15,15 +15,26 @@
 </template>
 
 <script>
+import CheckIcon from "../assets/CheckIcon.vue";
+
+import {randomId} from './helpers';
+
 export default {
   name: "TaskCreator",
+  components: {
+    CheckIcon,
+  },
   methods: {
-    toggleChecked(e) {
-      e.currentTarget.classList.toggle("checked");
-    },
-    addItemToTaskList(event) {
+    addItemToTaskList() {
       if (this.text !== "") {
-        this.$emit("addItem", this.text);
+        const newTask = {
+          content: this.text,
+          id: randomId(),
+          state: "active",
+        };
+
+        this.$emit("addItem", newTask);
+
         this.text = "";
       }
     },
