@@ -3,20 +3,23 @@
     <TaskCreator @addItem="addNewTask" />
     <TaskList
       :task-array="taskArrayWithFilters"
+      @deleteTask="deleteTask"
+      @stopItemEditing="stopEditing"
+      @editTask="editTask"
+    />
+    <TaskFilters
       :task-filter="taskFilter"
       :items-counter="itemsCounter"
       @changeFilter="changeFilter"
-      @deleteTask="deleteTask"
-      @clearComplited="clearComplited"
+      @clearCompleted="clearCompleted"
     />
-    <!-- <TaskFilters /> -->
-    <!-- TODO: dzikie małpy - przenieść filtry -->
   </main>
 </template>
 
 <script>
 import TaskCreator from "./TaskCreator.vue";
 import TaskList from "./TaskList.vue";
+import TaskFilters from "./TaskFilters.vue";
 
 import { randomId } from "./helpers";
 
@@ -25,18 +28,35 @@ export default {
   components: {
     TaskCreator,
     TaskList,
+    TaskFilters,
   },
   data() {
     return {
       taskArray: [
-        { content: "Do shopping", id: randomId(), state: "active" },
-        { content: "Clean up", id: randomId(), state: "active" },
-        { content: "Eat lunch", id: randomId(), state: "completed" },
         {
-          content:
-            "jnkjewnfkjew jfnwkjenfkjwe fnwjenf jjdwkjdkew jnwkdjnkewndknjew jdnwkjendkewndjw ndjwnekdnjewkdnew jdnwkjendkjewn ndjwneknw",
+          content: "Do shopping",
           id: randomId(),
           state: "active",
+          editing: false,
+        },
+        {
+          content: "Clean up",
+          id: randomId(),
+          state: "active",
+          editing: false,
+        },
+        {
+          content: "Eat lunch",
+          id: randomId(),
+          state: "completed",
+          editing: false,
+        },
+        {
+          content:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          id: randomId(),
+          state: "active",
+          editing: false,
         },
       ],
       taskFilter: "all",
@@ -55,6 +75,7 @@ export default {
   methods: {
     addNewTask(newTask) {
       this.taskArray = [...this.taskArray, newTask];
+      console.log(this.taskArray);
     },
     changeFilter(filterType) {
       this.taskFilter = filterType;
@@ -62,8 +83,20 @@ export default {
     deleteTask(taskId) {
       this.taskArray = this.taskArray.filter(({ id }) => id !== taskId);
     },
-    clearComplited() {
+    clearCompleted() {
       this.taskArray = this.taskArray.filter((task) => task.state === "active");
+    },
+    stopEditing(taskId, taskText) {
+      this.taskArray = this.taskArray.map((task) => {
+        return taskId === task.id
+          ? { ...task, content: taskText, editing: false }
+          : task;
+      });
+    },
+    editTask(taskId) {
+      this.taskArray = this.taskArray.map((task) => {
+        return taskId === task.id ? { ...task, editing: true } : task;
+      });
     },
   },
 };
