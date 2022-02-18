@@ -1,8 +1,8 @@
 <template>
   <div class="task-creator">
-    <button class="plus-button" @click="addItemToTaskList">
-      <div class="plus-button__circle">
-        <PlusIcon class="plus-icon" />
+    <button class="task-creator__plus-button" @click="addItemToTaskList">
+      <div class="task-creator__circle">
+        <PlusIcon class="task-creator__plus-icon" />
       </div>
     </button>
     <input
@@ -82,7 +82,7 @@ export default {
   }
 }
 
-.plus-button {
+.task-creator__plus-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -93,7 +93,7 @@ export default {
   align-items: center;
   justify-content: center;
 
-  .plus-icon {
+  .task-creator__plus-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -106,15 +106,15 @@ export default {
       hsl(192, 100%, 67%),
       hsl(280, 87%, 65%)
     );
-    .plus-icon {
+    .task-creator__plus-icon {
       fill: white;
     }
   }
+}
 
-  &__circle {
-    border-radius: 50%;
-    padding: 6px 7px;
-    background-color: var(--very-dark-desaturated-blue);
-  }
+.task-creator__circle {
+  border-radius: 50%;
+  padding: 6px 7px;
+  background-color: var(--very-dark-desaturated-blue);
 }
 </style>

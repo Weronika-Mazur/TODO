@@ -4,8 +4,8 @@
     <ul class="nav-bar__filter">
       <li
         v-for="filter in filterArray"
-        class="nav-bar__li"
-        :class="{ 'nav-bar__filter--active': isActiveFilter(filter.type) }"
+        class="nav-bar__option"
+        :class="{ 'nav-bar__option--active': isActiveFilter(filter.type) }"
         @click="setFilter(filter.type)"
       >
         {{ filter.desc }}
@@ -77,6 +77,16 @@ export default {
   display: flex;
   justify-content: space-between;
   padding-left: 14px;
+}
+
+.nav-bar__option {
+  list-style-type: none;
+  margin: 0px 4px;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--light-grayish-blue-hover);
+  }
 
   &--active {
     color: var(--bright-blue);
@@ -85,16 +95,6 @@ export default {
       cursor: default !important;
       color: var(--bright-blue) !important;
     }
-  }
-}
-
-.nav-bar__li {
-  list-style-type: none;
-  margin: 0px 4px;
-
-  &:hover {
-    cursor: pointer;
-    color: var(--light-grayish-blue-hover);
   }
 }
 

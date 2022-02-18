@@ -2,24 +2,23 @@
   <div
     class="item"
     :class="{
-      'task-active': state === `active`,
-      'task-completed': state === `completed`,
+      'item--task-completed': state === `completed`,
     }"
   >
     <button
-      class="check-button"
+      class="item__check-button"
       :class="{ checked: state === 'completed' }"
       @click="toggleChecked"
     >
-      <div class="check-button__circle">
+      <div class="item__circle">
         <CheckIcon class="item__check-icon" />
       </div>
     </button>
-    <p class="item__p">{{ content }}</p>
-    <button class="edit-button" @click="this.$emit('editTask')">
+    <p class="item__text">{{ content }}</p>
+    <button class="item__edit-button" @click="this.$emit('editTask')">
       <EditIcon />
     </button>
-    <button class="cross-button" @click="this.$emit('deleteTask')">
+    <button class="item__cross-button" @click="this.$emit('deleteTask')">
       <CrossIcon />
     </button>
   </div>
@@ -55,7 +54,7 @@ export default {
   padding: 8px 20px;
   border-bottom: solid 1px var(--very-dark-grayish-blue-dark-mode-second);
 
-  .item__p {
+  .item__text {
     color: var(--light-grayish-blue-dark-mode);
     font-weight: 400;
     font-size: 18px;
@@ -64,25 +63,31 @@ export default {
   }
 
   &:hover {
-    .cross-button,
-    .edit-button {
+    .item__cross-button,
+    .item__edit-button {
       visibility: visible;
     }
   }
+
+  &__circle {
+    border-radius: 50%;
+    padding: 6px 7px;
+    background-color: var(--very-dark-desaturated-blue);
+  }
+
+  &__check-icon {
+    visibility: hidden;
+  }
 }
 
-.task-completed {
-  .item__p {
+.item--task-completed {
+  .item__text {
     color: var(--very-dark-grayish-blue-dark-mode-second);
     text-decoration: line-through;
   }
 }
 
-.item__check-icon {
-  visibility: hidden;
-}
-
-.check-button {
+.item__check-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -104,12 +109,6 @@ export default {
       visibility: visible;
     }
   }
-
-  &__circle {
-    border-radius: 50%;
-    padding: 6px 7px;
-    background-color: var(--very-dark-desaturated-blue);
-  }
 }
 
 .checked {
@@ -119,7 +118,7 @@ export default {
     hsl(280, 87%, 65%)
   );
 
-  .check-button__circle {
+  .item__circle {
     background-image: linear-gradient(
       150deg,
       hsl(192, 100%, 67%),
@@ -132,8 +131,8 @@ export default {
   }
 }
 
-.cross-button,
-.edit-button {
+.item__cross-button,
+.item__edit-button {
   background: none;
   border: none;
   cursor: pointer;

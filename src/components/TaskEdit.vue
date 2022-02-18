@@ -1,14 +1,9 @@
 <template>
   <div class="backdrop" @click="endEditing"></div>
   <div class="edit">
-    <input
-      type="text"
-      class="edit__input task-creator__input"
-      ref="editInput"
-      v-model="text"
-    />
-    <button class="cross-button" @click="cancelEdit">
-      <CrossIcon class="cross-button--white" />
+    <input type="text" class="edit__input task-creator__input" v-model="text" />
+    <button class="edit__cross-btn" @click="cancelEdit">
+      <CrossIcon class="edit__cross-btn--white" />
     </button>
   </div>
 </template>
@@ -49,19 +44,15 @@ export default {
   border-bottom: solid 1px var(--very-dark-grayish-blue-dark-mode-second);
   z-index: 2;
   position: relative;
-
-  .item__p {
-    color: var(--light-grayish-blue-dark-mode);
-    font-weight: 400;
-    font-size: 18px;
-    width: 100%;
-    margin-left: 10px;
-  }
 }
 
-.cross-button {
+.edit__cross-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   visibility: visible;
-  .cross-button--white {
+  &--white {
     fill: var(--light-grayish-blue-dark-mode);
   }
 }
