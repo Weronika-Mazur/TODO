@@ -1,45 +1,20 @@
 <template>
   <div class="background-img"></div>
   <div class="container">
-    <header>
-      <h1>TODO</h1>
-      <button class="toggle-mode">
-        <img src="./assets/icon-sun.svg" />
-      </button>
-    </header>
-    <main>
-      <TaskCreator @addItem="addNewItem"></TaskCreator>
-      <TaskList
-        :addNewItem="buttonPressed"
-        :newItemText="text"
-        ref="A"
-      ></TaskList>
-    </main>
+    <Header />
+    <TaskContainer />
   </div>
 </template>
 
 <script>
-import TaskCreator from "./components/TaskCreator.vue";
-import TaskList from "./components/TaskList.vue";
+import Header from "./components/Header.vue";
+import TaskContainer from "./components/TaskContainer.vue";
 
 export default {
   name: "App",
   components: {
-    TaskCreator,
-    TaskList,
-  },
-  data() {
-    return {
-      mode: "dark",
-      buttonPressed: false,
-      text: "",
-    };
-  },
-  methods: {
-    addNewItem(text) {
-      this.text = text;
-      this.buttonPressed = !this.buttonPressed;
-    },
+    Header,
+    TaskContainer,
   },
 };
 </script>
@@ -48,7 +23,7 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Poppins:wght@500;700&display=swap");
 
 :root {
-  --bright-blue: hsl(220, 98%, 61%);
+  --bright-blue: #3a7bfd;
   --check-background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 
   --very-light-grey: hsl(0, 0%, 98%);
@@ -96,25 +71,8 @@ body {
   justify-content: center;
 }
 
-header {
-  display: flex;
-  align-items: space-between;
-  justify-content: space-between;
-}
-
-header h1 {
-  font-size: 42px;
-  letter-spacing: 12px;
-}
-
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .container {
-  width: 540px;
+  width: 640px;
   margin-top: 80px;
 }
 </style>
