@@ -71,40 +71,8 @@ body {
   justify-content: center;
 }
 
-header {
-  display: flex;
-  align-items: space-between;
-  justify-content: space-between;
-}
-
-header h1 {
-  font-size: 42px;
-  letter-spacing: 12px;
-}
-
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .container {
-  width: 540px;
+  width: 640px;
   margin-top: 80px;
 }
-
-/* // .header {
-//   // some styles
-//   &__title {
-//     color: red;
-//   }
-
-//   &__btn {
-//     width: 300px;
-
-//     &--disabled {
-//       color: grey;
-//     }
-//   }
-// } */
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div class="task-creator">
-    <button class="check-button" @click="addItemToTaskList">
-      <div class="check-circle">
-        <CheckIcon />
+    <button class="task-creator__plus-button" @click="addItemToTaskList">
+      <div class="task-creator__circle">
+        <PlusIcon class="task-creator__plus-icon" />
       </div>
     </button>
     <input
       type="text"
-      class="task-creator-input"
+      class="task-creator__input"
       placeholder="Create a new todo..."
       v-model="text"
     />
@@ -15,14 +15,14 @@
 </template>
 
 <script>
-import CheckIcon from "../assets/CheckIcon.vue";
+import PlusIcon from "../assets/PlusIcon.vue";
 
-import {randomId} from './helpers';
+import { randomId } from "./helpers";
 
 export default {
   name: "TaskCreator",
   components: {
-    CheckIcon,
+    PlusIcon,
   },
   methods: {
     addItemToTaskList() {
@@ -31,6 +31,7 @@ export default {
           content: this.text,
           id: randomId(),
           state: "active",
+          editing: false,
         };
 
         this.$emit("addItem", newTask);
@@ -47,7 +48,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .task-creator {
   background-color: var(--very-dark-desaturated-blue);
   padding: 8px 20px;
@@ -59,72 +60,61 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
     rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
     rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+
+  &__input {
+    background-color: transparent;
+    border: none;
+    color: var(--light-grayish-blue-dark-mode);
+    font-weight: 400;
+    font-size: 18px;
+    width: 100%;
+    font-family: "Josefin Sans", sans-serif;
+    margin: 1em;
+    margin-left: 8px;
+
+    &::placeholder {
+      color: var(--dark-grayish-blue-dark-mode);
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
-.task-creator-input {
-  background-color: transparent;
+.task-creator__plus-button {
+  background: none;
   border: none;
-  color: var(--light-grayish-blue-dark-mode);
-  font-weight: 400;
-  font-size: 18px;
-  width: 100%;
-  font-family: "Josefin Sans", sans-serif;
-  margin: 1em;
-  margin-left: 8px;
-}
-
-.task-creator-input::placeholder {
-  color: var(--dark-grayish-blue-dark-mode);
-}
-
-.task-creator-input:focus {
-  outline: none;
-}
-
-.check-button {
+  cursor: pointer;
   border-radius: 50%;
   padding: 1px;
   background-color: var(--very-dark-grayish-blue-dark-mode);
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .task-creator__plus-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    fill: var(--light-grayish-blue-dark-mode);
+  }
+
+  &:hover {
+    background-image: linear-gradient(
+      150deg,
+      hsl(192, 100%, 67%),
+      hsl(280, 87%, 65%)
+    );
+    .task-creator__plus-icon {
+      fill: white;
+    }
+  }
 }
 
-.check-button:hover {
-  background-image: linear-gradient(
-    150deg,
-    hsl(192, 100%, 67%),
-    hsl(280, 87%, 65%)
-  );
-}
-
-.check-circle {
+.task-creator__circle {
   border-radius: 50%;
-  padding: 4px 5px;
+  padding: 6px 7px;
   background-color: var(--very-dark-desaturated-blue);
-}
-
-.checked .check-circle {
-  background-image: linear-gradient(
-    150deg,
-    hsl(192, 100%, 67%),
-    hsl(280, 87%, 65%)
-  );
-}
-
-.check-circle img {
-  visibility: hidden;
-}
-
-.checked img {
-  visibility: visible;
-}
-
-.checked {
-  background-image: linear-gradient(
-    150deg,
-    hsl(192, 100%, 67%),
-    hsl(280, 87%, 65%)
-  );
 }
 </style>
