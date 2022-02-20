@@ -20,7 +20,6 @@
 <script>
 export default {
   name: "TaskFilters",
-  props: ["taskFilter", "itemsCounter"],
   data() {
     return {
       filterArray: [
@@ -41,18 +40,18 @@ export default {
   },
   methods: {
     isActiveFilter(filterType) {
-      return this.taskFilter === filterType;
+      return this.$store.state.taskFilter === filterType;
     },
     setFilter(filterType) {
-      this.$emit("changeFilter", filterType);
+      this.$store.commit("setFilter", filterType);
     },
     clearCompleted() {
-      this.$emit("clearCompleted");
+      this.$store.commit("clearCompleted");
     },
   },
   computed: {
     itemsLeft() {
-      return `${this.itemsCounter} items left`;
+      return `${this.$store.getters.itemsCounter} items left`;
     },
   },
 };

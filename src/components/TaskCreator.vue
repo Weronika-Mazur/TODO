@@ -16,8 +16,7 @@
 
 <script>
 import PlusIcon from "../assets/PlusIcon.vue";
-
-import { randomId } from "./helpers";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "TaskCreator",
@@ -29,12 +28,12 @@ export default {
       if (this.text !== "") {
         const newTask = {
           content: this.text,
-          id: randomId(),
+          id: uuidv4(),
           state: "active",
           editing: false,
         };
 
-        this.$emit("addItem", newTask);
+        this.$store.commit("addTask", newTask);
 
         this.text = "";
       }

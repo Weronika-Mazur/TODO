@@ -74,5 +74,6 @@ body {
 .container {
   width: 640px;
   margin-top: 80px;
+  margin-bottom: 74px;
 }
 </style>
