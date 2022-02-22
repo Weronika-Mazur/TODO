@@ -27,28 +27,38 @@ import TaskEdit from "./TaskEdit.vue";
 
 export default {
   name: "TaskList",
-  props: ["taskArray"],
   components: {
     TaskItem,
     TaskEdit,
   },
-  data() {
-    return {};
+  computed: {
+    taskArray() {
+      return this.$store.getters.taskArrayWithFilters;
+    },
   },
   methods: {
     toggleItemState(task) {
-      task.state === "active"
-        ? (task.state = "completed")
-        : (task.state = "active");
+      const taskStatus = task.state === "active" ? "completed" : "active";
+      this.$store.commit("changeTask", {
+        id: task.id,
+        state: taskStatus,
+      });
     },
     deleteTaskItem(taskId) {
-      this.$emit("deleteTask", taskId);
+      this.$store.commit("deleteTask", taskId);
     },
     endEditing(taskId, taskText) {
-      this.$emit("stopItemEditing", taskId, taskText);
+      this.$store.commit("changeTask", {
+        id: taskId,
+        content: taskText,
+        editing: false,
+      });
     },
     editTaskItem(taskId) {
-      this.$emit("editTask", taskId);
+      this.$store.commit("changeTask", {
+        id: taskId,
+        editing: true,
+      });
     },
   },
 };
