@@ -49,13 +49,13 @@ export const store = createStore({
       state.taskFilter = filterType;
     },
     changeTask(state, payload) {
-      state.taskArray = state.taskArray.map((task) => {
-        return payload.id === task.id ? { ...task, ...payload } : task;
-      });
+      state.taskArray = state.taskArray.map((task) =>
+        payload.id === task.id ? { ...task, ...payload } : task
+      );
     },
     clearCompleted(state) {
       state.taskArray = state.taskArray.filter(
-        (task) => task.state === "active"
+        ({ state }) => state === "active"
       );
     },
     deleteTask(state, taskId) {

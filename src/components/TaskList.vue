@@ -38,15 +38,11 @@ export default {
   },
   methods: {
     toggleItemState(task) {
-      task.state === "active"
-        ? this.$store.commit("changeTask", {
-            id: task.id,
-            state: "completed",
-          })
-        : this.$store.commit("changeTask", {
-            id: task.id,
-            state: "active",
-          });
+      const taskStatus = task.state === "active" ? "completed" : "active";
+      this.$store.commit("changeTask", {
+        id: task.id,
+        state: taskStatus,
+      });
     },
     deleteTaskItem(taskId) {
       this.$store.commit("deleteTask", taskId);
