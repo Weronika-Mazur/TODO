@@ -5,17 +5,17 @@
         v-if="!task.editing"
         :state="task.state"
         :content="task.content"
-        :key="task.id"
+        :key="task._id"
         @toggleState="toggleItemState(task)"
-        @deleteTask="deleteTaskItem(task.id)"
-        @editTask="editTaskItem(task.id)"
+        @deleteTask="deleteTaskItem(task._id)"
+        @editTask="editTaskItem(task._id)"
       />
       <TaskEdit
         v-else
         :state="task.state"
         :content="task.content"
-        :key="task.id"
-        @stopEditing="(taskText) => endEditing(task.id, taskText)"
+        :key="task._id"
+        @stopEditing="(taskText) => endEditing(task._id, taskText)"
       />
     </div>
   </section>
@@ -40,7 +40,7 @@ export default {
     toggleItemState(task) {
       const taskStatus = task.state === "active" ? "completed" : "active";
       this.$store.commit("changeTask", {
-        id: task.id,
+        _id: task._id,
         state: taskStatus,
       });
     },
@@ -49,14 +49,14 @@ export default {
     },
     endEditing(taskId, taskText) {
       this.$store.commit("changeTask", {
-        id: taskId,
+        _id: taskId,
         content: taskText,
         editing: false,
       });
     },
     editTaskItem(taskId) {
       this.$store.commit("changeTask", {
-        id: taskId,
+        _id: taskId,
         editing: true,
       });
     },

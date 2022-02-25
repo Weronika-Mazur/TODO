@@ -16,6 +16,9 @@ export default {
     Header,
     TaskContainer,
   },
+  created() {
+    this.$store.dispatch("fetchTaskArray");
+  },
 };
 </script>
 
