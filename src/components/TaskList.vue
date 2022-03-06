@@ -2,7 +2,7 @@
   <section class="task-list">
     <div v-for="task in taskArray">
       <TaskItem
-        v-if="!task.editing"
+        v-if="!isEditModeActive(task._id)"
         :state="task.state"
         :content="task.content"
         :key="task._id"
@@ -39,26 +39,38 @@ export default {
   methods: {
     toggleItemState(task) {
       const taskStatus = task.state === "active" ? "completed" : "active";
-      this.$store.commit("changeTask", {
+      this.$store.dispatch("changeTask", {
         _id: task._id,
         state: taskStatus,
       });
     },
     deleteTaskItem(taskId) {
-      this.$store.commit("deleteTask", taskId);
+      this.$store.dispatch("deleteTask", taskId).catch((err) => {
+        console.log(err);
+        this.$store.commit("setIsBusy", false);
+        this.$store.commit("setErrorMessage", "deleting task");
+      });
+    },
+    isEditModeActive(taskId) {
+      return taskId === this.$store.state.editMode.id;
     },
     endEditing(taskId, taskText) {
-      this.$store.commit("changeTask", {
-        _id: taskId,
-        content: taskText,
-        editing: false,
-      });
+      this.$store
+        .dispatch("changeTask", {
+          _id: taskId,
+          content: taskText,
+        })
+        .then(() => {
+          this.$store.commit("deactivateEditMode");
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$store.commit("setIsBusy", false);
+          this.$store.commit("setErrorMessage", "editing task");
+        });
     },
     editTaskItem(taskId) {
-      this.$store.commit("changeTask", {
-        _id: taskId,
-        editing: true,
-      });
+      this.$store.commit("activateEditMode", taskId);
     },
   },
 };

@@ -46,7 +46,11 @@ export default {
       this.$store.commit("setFilter", filterType);
     },
     clearCompleted() {
-      this.$store.commit("clearCompleted");
+      this.$store.dispatch("clearCompleted").catch((err) => {
+        console.log(err);
+        this.$store.commit("setIsBusy", false);
+        this.$store.commit("setErrorMessage", "clearing completed tasks");
+      });
     },
   },
   computed: {

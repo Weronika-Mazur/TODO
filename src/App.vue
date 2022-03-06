@@ -17,7 +17,11 @@ export default {
     TaskContainer,
   },
   created() {
-    this.$store.dispatch("fetchTaskArray");
+    this.$store.dispatch("fetchTaskArray").catch((err) => {
+      console.log(err);
+      this.$store.commit("setIsBusy", false);
+      this.$store.commit("setErrorMessage", "trying to get tasks");
+    });
   },
 };
 </script>

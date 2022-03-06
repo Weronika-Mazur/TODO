@@ -16,8 +16,7 @@ export default {
   emits: ["stopEditing"],
   methods: {
     cancelEdit() {
-      this.text = this.content;
-      this.endEditing();
+      this.$store.commit("deactivateEditMode");
     },
     endEditing() {
       this.$emit("stopEditing", this.text);

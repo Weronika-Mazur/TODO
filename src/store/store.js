@@ -1,40 +1,21 @@
 import { createStore } from "vuex";
-import { v4 as uuidv4 } from "uuid";
+import FetchDB from "./fetchDB";
 
 const DB_URL = "http://localhost:3000/todos";
+
+const fetchDB = new FetchDB(DB_URL);
 
 export const store = createStore({
   state() {
     return {
       taskArray: [],
-      // taskArray: [
-      //   {
-      //     content: "Do shopping",
-      //     _id: uu_idv4(),
-      //     state: "active",
-      //     editing: false,
-      //   },
-      //   {
-      //     content: "Clean up",
-      //     _id: uu_idv4(),
-      //     state: "active",
-      //     editing: false,
-      //   },
-      //   {
-      //     content: "Eat lunch",
-      //     _id: uu_idv4(),
-      //     state: "completed",
-      //     editing: false,
-      //   },
-      //   {
-      //     content:
-      //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor inc_id_idunt ut labore et dolore magna aliqua.",
-      //     _id: uu_idv4(),
-      //     state: "active",
-      //     editing: false,
-      //   },
-      // ],
       taskFilter: "all",
+      isBusy: true,
+      errorMessage: "",
+      editMode: {
+        active: false,
+        id: "",
+      },
     };
   },
   getters: {
@@ -51,89 +32,95 @@ export const store = createStore({
     setFilter(state, filterType) {
       state.taskFilter = filterType;
     },
-    changeTask(state, payload) {
-      state.taskArray = state.taskArray.map((task) =>
-        payload._id === task._id ? { ...task, ...payload } : task
-      );
-      store.dispatch("changeTask", payload);
-    },
-    clearCompleted(state) {
-      state.taskArray = state.taskArray.filter(
-        ({ state }) => state === "active"
-      );
-      store.dispatch("clearCompleted");
-    },
-    deleteTask(state, taskId) {
-      state.taskArray = state.taskArray.filter(({ _id }) => _id !== taskId);
-      store.dispatch("deleteTask", taskId);
-    },
-    addTask(state, newTask) {
-      state.taskArray = [...state.taskArray, newTask];
-      store.dispatch("addTask", newTask);
-    },
     setTaskArray(state, taskArray) {
       state.taskArray = taskArray;
     },
+    setIsBusy(state, value) {
+      state.isBusy = value;
+    },
+    setErrorMessage(state, value) {
+      state.errorMessage = value;
+    },
+    activateEditMode(state, id) {
+      state.editMode = {
+        active: true,
+        id: id,
+      };
+    },
+    deactivateEditMode(state) {
+      state.editMode = {
+        active: false,
+        id: "",
+      };
+    },
+    // changeTask(state, payload) {
+    //   store.commit("setIsBusy", true);
+    //   // state.taskArray = state.taskArray.map((task) =>
+    //   //   payload._id === task._id ? { ...task, ...payload } : task
+    //   // );
+    //   store.dispatch("changeTask", payload);
+    // },
+    // clearCompleted(state) {
+    //   store.commit("setIsBusy", true);
+    //   // state.taskArray = state.taskArray.filter(
+    //   //   ({ state }) => state === "active"
+    //   // );
+    //   store.dispatch("clearCompleted");
+    // },
+    // deleteTask(state, taskId) {
+    //   store.commit("setIsBusy", true);
+    //   // state.taskArray = state.taskArray.filter(({ _id }) => _id !== taskId);
+    //   store.dispatch("deleteTask", taskId);
+    // },
+    // addTask(state, newTask) {
+    //   // state.taskArray = [...state.taskArray, newTask];
+    //   store.commit("setIsBusy", true);
+    //   store.dispatch("addTask", newTask);
+    // },
   },
   actions: {
-    fetchTaskArray() {
-      fetch(DB_URL)
-        .then((response) => response.json())
-        .then((data) => {
-          store.commit("setTaskArray", data);
-        });
-    },
-    clearCompleted() {
-      fetch(DB_URL, {
-        method: "DELETE",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("success");
-          store.dispatch("fetchTaskArray");
-        });
-    },
-    addTask(context, newTask) {
-      fetch(DB_URL, {
-        method: "POST",
-        body: JSON.stringify(newTask),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("success");
-          store.dispatch("fetchTaskArray");
-        });
-    },
-    changeTask(context, changes) {
-      const url = `${DB_URL}/${changes._id}`;
+    async fetchTaskArray(context) {
+      context.commit("setIsBusy", true);
+      const data = await fetchDB.get();
 
-      fetch(url, {
-        method: "PUT",
-        body: JSON.stringify(changes),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("success");
-          store.dispatch("fetchTaskArray");
-        });
-    },
-    deleteTask(context, taskId) {
-      const url = `${DB_URL}/${taskId}`;
+      context.commit("setTaskArray", data);
+      context.commit("setIsBusy", false);
 
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("success");
-          store.dispatch("fetchTaskArray");
-        });
+      context.commit("setErrorMessage", "");
+
+      return data;
+    },
+    async clearCompleted(context) {
+      context.commit("setIsBusy", true);
+      const data = await fetchDB.delete();
+
+      context.dispatch("fetchTaskArray");
+
+      return data;
+    },
+    async addTask(context, newTask) {
+      context.commit("setIsBusy", true);
+      const data = await fetchDB.post(newTask);
+
+      context.dispatch("fetchTaskArray");
+
+      return data;
+    },
+    async changeTask(context, changes) {
+      context.commit("setIsBusy", true);
+      const data = await fetchDB.put(changes);
+
+      context.dispatch("fetchTaskArray");
+
+      return data;
+    },
+    async deleteTask(context, taskId) {
+      context.commit("setIsBusy", true);
+      const data = await fetchDB.delete(taskId);
+
+      context.dispatch("fetchTaskArray");
+
+      return data;
     },
   },
 });

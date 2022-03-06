@@ -1,5 +1,5 @@
 <template>
-  <div class="task-creator">
+  <div class="task-creator" v-if="!this.$store.state.isBusy">
     <button class="task-creator__plus-button" @click="addItemToTaskList">
       <div class="task-creator__circle">
         <PlusIcon class="task-creator__plus-icon" />
@@ -12,30 +12,41 @@
       v-model="text"
     />
   </div>
+  <div v-else class="busy">
+    <BusyIcon class="busy-icon" />
+  </div>
 </template>
 
 <script>
 import PlusIcon from "../assets/PlusIcon.vue";
+import BusyIcon from "../assets/BusyIcon.vue";
+
 import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "TaskCreator",
   components: {
     PlusIcon,
+    BusyIcon,
   },
   methods: {
     addItemToTaskList() {
       if (this.text !== "") {
         const newTask = {
           content: this.text,
-          id: uuidv4(),
           state: "active",
-          editing: false,
         };
 
-        this.$store.commit("addTask", newTask);
-
-        this.text = "";
+        this.$store
+          .dispatch("addTask", newTask)
+          .then(() => {
+            this.text = "";
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$store.commit("setIsBusy", false);
+            this.$store.commit("setErrorMessage", "adding the task");
+          });
       }
     },
   },
@@ -115,5 +126,20 @@ export default {
   border-radius: 50%;
   padding: 6px 7px;
   background-color: var(--very-dark-desaturated-blue);
+}
+
+.busy {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--very-dark-desaturated-blue);
+  padding: 29px 0px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
+    rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
+    rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+
+  &-icon {
+  }
 }
 </style>
