@@ -17,48 +17,57 @@
   </section>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+import { useStore } from "../store/store";
+import { typeFilter } from "../types/type";
+
+export default defineComponent({
   name: "TaskFilters",
+  setup() {
+    const store = useStore();
+
+    return { store };
+  },
   data() {
     return {
       filterArray: [
         {
-          type: "all",
+          type: "all" as typeFilter,
           desc: "All",
         },
         {
-          type: "active",
+          type: "active" as typeFilter,
           desc: "Active",
         },
         {
-          type: "completed",
+          type: "completed" as typeFilter,
           desc: "Completed",
         },
       ],
     };
   },
   methods: {
-    isActiveFilter(filterType) {
-      return this.$store.state.taskFilter === filterType;
+    isActiveFilter(filterType: typeFilter): boolean {
+      return this.store.taskFilter === filterType;
     },
-    setFilter(filterType) {
-      this.$store.commit("setFilter", filterType);
+    setFilter(filterType: typeFilter) {
+      this.store.setFilter(filterType);
     },
     clearCompleted() {
-      this.$store.dispatch("clearCompleted").catch((err) => {
+      this.store.clearCompleted().catch((err) => {
         console.log(err);
-        this.$store.commit("setIsBusy", false);
-        this.$store.commit("setErrorMessage", "clearing completed tasks");
+        this.store.setIsBusy(false);
+        this.store.setErrorMessage("clearing completed tasks");
       });
     },
   },
   computed: {
-    itemsLeft() {
-      return `${this.$store.getters.itemsCounter} items left`;
+    itemsLeft(): string {
+      return `${this.store.itemsCounter} items left`;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

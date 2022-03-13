@@ -1,5 +1,5 @@
 <template>
-  <div class="task-creator" v-if="!this.$store.state.isBusy">
+  <div class="task-creator" v-if="!store.isBusy">
     <button class="task-creator__plus-button" @click="addItemToTaskList">
       <div class="task-creator__circle">
         <PlusIcon class="task-creator__plus-icon" />
@@ -17,14 +17,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import PlusIcon from "../assets/PlusIcon.vue";
 import BusyIcon from "../assets/BusyIcon.vue";
+import { useStore } from "../store/store";
+import { typeTaskContent } from "../types/type";
 
-import { v4 as uuidv4 } from "uuid";
-
-export default {
+export default defineComponent({
   name: "TaskCreator",
+  setup() {
+    const store = useStore();
+
+    return { store };
+  },
   components: {
     PlusIcon,
     BusyIcon,
@@ -35,17 +41,17 @@ export default {
         const newTask = {
           content: this.text,
           state: "active",
-        };
+        } as typeTaskContent;
 
-        this.$store
-          .dispatch("addTask", newTask)
+        this.store
+          .addTask(newTask)
           .then(() => {
             this.text = "";
           })
           .catch((err) => {
             console.log(err);
-            this.$store.commit("setIsBusy", false);
-            this.$store.commit("setErrorMessage", "adding the task");
+            this.store.setIsBusy(false);
+            this.store.setErrorMessage("adding the task");
           });
       }
     },
@@ -55,7 +61,7 @@ export default {
       text: "",
     };
   },
-};
+});
 </script>
 
 <style lang="scss">
@@ -138,8 +144,5 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
     rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
     rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
-
-  &-icon {
-  }
 }
 </style>

@@ -7,10 +7,11 @@
   </header>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import SunIcon from "../assets/SunIcon.vue";
 
-export default {
+export default defineComponent({
   name: "Header",
   data() {
     return {
@@ -20,7 +21,7 @@ export default {
   components: {
     SunIcon,
   },
-};
+});
 </script>
 
 <style lang="scss">

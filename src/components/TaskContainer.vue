@@ -3,20 +3,24 @@
     <TaskCreator />
     <TaskList />
     <TaskFilters />
-    <ErrorBanner v-if="this.$store.state.errorMessage" />
+    <ErrorBanner v-if="store.errorMessage" />
   </main>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import TaskCreator from "./TaskCreator.vue";
 import TaskList from "./TaskList.vue";
 import TaskFilters from "./TaskFilters.vue";
 import ErrorBanner from "./ErrorBanner.vue";
+import { useStore } from "../store/store";
 
-export default {
+export default defineComponent({
   name: "TaskContainer",
-  data() {
-    return {};
+  setup() {
+    const store = useStore();
+
+    return { store };
   },
   components: {
     TaskCreator,
@@ -24,5 +28,5 @@ export default {
     TaskFilters,
     ErrorBanner,
   },
-};
+});
 </script>

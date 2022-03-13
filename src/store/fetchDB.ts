@@ -1,5 +1,9 @@
+import { typeTaskContent } from "../types/type";
+
 export default class FetchDB {
-  constructor(url) {
+  url: string;
+
+  constructor(url: string) {
     this.url = url;
   }
 
@@ -10,7 +14,7 @@ export default class FetchDB {
     return response;
   }
 
-  async delete(id) {
+  async delete(id?: string) {
     const url = id
       ? `${this.url}/delete-task/${id}`
       : `${this.url}/clear-tasks`;
@@ -21,7 +25,7 @@ export default class FetchDB {
     return response;
   }
 
-  async post(newTask) {
+  async post(newTask: typeTaskContent) {
     const url = `${this.url}/add-task`;
 
     const data = await fetch(url, {
@@ -36,7 +40,7 @@ export default class FetchDB {
     return response;
   }
 
-  async put(changes) {
+  async put(changes: typeTaskContent) {
     const url = `${this.url}/change-task/${changes._id}`;
 
     const data = await fetch(url, {

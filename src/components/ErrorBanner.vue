@@ -9,25 +9,32 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import CrossIcon from "../assets/CrossIcon.vue";
+import { useStore } from "../store/store";
 
-export default {
+export default defineComponent({
   name: "ErrorBanner",
+  setup() {
+    const store = useStore();
+
+    return { store };
+  },
   components: {
     CrossIcon,
   },
   methods: {
     closeBanner() {
-      this.$store.commit("setErrorMessage", "");
+      this.store.setErrorMessage("");
     },
   },
   computed: {
-    errorMessage() {
-      return `Error occurred while ${this.$store.state.errorMessage}!`;
+    errorMessage(): string {
+      return `Error occurred while ${this.store.errorMessage}!`;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

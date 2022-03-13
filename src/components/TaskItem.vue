@@ -15,24 +15,25 @@
       </div>
     </button>
     <p class="item__text">{{ content }}</p>
-    <button class="item__edit-button" @click="this.$emit('editTask')">
+    <button class="item__edit-button" @click="$emit('editTask')">
       <EditIcon />
     </button>
-    <button class="item__cross-button" @click="this.$emit('deleteTask')">
+    <button class="item__cross-button" @click="$emit('deleteTask')">
       <CrossIcon />
     </button>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import CheckIcon from "../assets/CheckIcon.vue";
 import CrossIcon from "../assets/CrossIcon.vue";
 import EditIcon from "../assets/EditIcon.vue";
 
-export default {
+export default defineComponent({
   name: "TaskItem",
   methods: {
-    toggleChecked(e) {
+    toggleChecked() {
       this.$emit("toggleState");
     },
   },
@@ -42,7 +43,7 @@ export default {
     CrossIcon,
     EditIcon,
   },
-};
+});
 </script>
 
 <style lang="scss">

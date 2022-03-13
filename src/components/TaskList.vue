@@ -14,66 +14,74 @@
         v-else
         :state="task.state"
         :content="task.content"
-        :key="task._id"
-        @stopEditing="(taskText) => endEditing(task._id, taskText)"
+        :key="task._id + 'edit'"
+        @stopEditing="(taskText: string) => endEditing(task._id, taskText)"
       />
     </div>
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import TaskItem from "./TaskItem.vue";
 import TaskEdit from "./TaskEdit.vue";
+import { useStore } from "../store/store";
+import { typeTask } from "../types/type";
 
-export default {
+export default defineComponent({
   name: "TaskList",
+  setup() {
+    const store = useStore();
+
+    return { store };
+  },
   components: {
     TaskItem,
     TaskEdit,
   },
   computed: {
-    taskArray() {
-      return this.$store.getters.taskArrayWithFilters;
+    taskArray(): typeTask[] {
+      return this.store.taskArrayWithFilters;
     },
   },
   methods: {
-    toggleItemState(task) {
+    toggleItemState(task: typeTask) {
       const taskStatus = task.state === "active" ? "completed" : "active";
-      this.$store.dispatch("changeTask", {
+      this.store.changeTask({
         _id: task._id,
         state: taskStatus,
       });
     },
-    deleteTaskItem(taskId) {
-      this.$store.dispatch("deleteTask", taskId).catch((err) => {
+    deleteTaskItem(taskId: string) {
+      this.store.deleteTask(taskId).catch((err) => {
         console.log(err);
-        this.$store.commit("setIsBusy", false);
-        this.$store.commit("setErrorMessage", "deleting task");
+        this.store.setIsBusy(false);
+        this.store.setErrorMessage("deleting task");
       });
     },
-    isEditModeActive(taskId) {
-      return taskId === this.$store.state.editMode.id;
+    isEditModeActive(taskId: string) {
+      return taskId === this.store.editMode.id;
     },
-    endEditing(taskId, taskText) {
-      this.$store
-        .dispatch("changeTask", {
+    endEditing(taskId: string, taskText: string) {
+      this.store
+        .changeTask({
           _id: taskId,
           content: taskText,
         })
         .then(() => {
-          this.$store.commit("deactivateEditMode");
+          this.store.deactivateEditMode();
         })
         .catch((err) => {
           console.log(err);
-          this.$store.commit("setIsBusy", false);
-          this.$store.commit("setErrorMessage", "editing task");
+          this.store.setIsBusy(false);
+          this.store.setErrorMessage("editing task");
         });
     },
-    editTaskItem(taskId) {
-      this.$store.commit("activateEditMode", taskId);
+    editTaskItem(taskId: string) {
+      this.store.activateEditMode(taskId);
     },
   },
-};
+});
 </script>
 
 <style>

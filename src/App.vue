@@ -6,27 +6,34 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import Header from "./components/Header.vue";
 import TaskContainer from "./components/TaskContainer.vue";
+import { useStore } from "./store/store";
 
-export default {
+export default defineComponent({
   name: "App",
   components: {
     Header,
     TaskContainer,
   },
+  setup() {
+    const store = useStore();
+
+    return { store };
+  },
   created() {
-    this.$store.dispatch("fetchTaskArray").catch((err) => {
+    this.store.fetchTaskArray().catch((err) => {
       console.log(err);
-      this.$store.commit("setIsBusy", false);
-      this.$store.commit("setErrorMessage", "trying to get tasks");
+      this.store.setIsBusy(false);
+      this.store.setErrorMessage("trying to get tasks");
     });
   },
-};
+});
 </script>
 
-<style>
+<style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Poppins:wght@500;700&display=swap");
 
 :root {
