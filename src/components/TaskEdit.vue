@@ -8,36 +8,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
+<script setup lang="ts">
+import { ref } from "vue";
 import CrossIcon from "../assets/CrossIcon.vue";
 import { useStore } from "../store/store";
 
-export default defineComponent({
-  name: "TaskEdit",
-  setup() {
-    const store = useStore();
+const store = useStore();
+const emit = defineEmits(["stopEditing"]);
+const props = defineProps(["content", "state", "id"]);
 
-    return { store };
-  },
-  components: { CrossIcon },
-  emits: ["stopEditing"],
-  methods: {
-    cancelEdit() {
-      this.store.deactivateEditMode();
-    },
-    endEditing() {
-      this.$emit("stopEditing", this.text);
-    },
-  },
-  data() {
-    return {
-      text: this.content,
-    };
-  },
-  props: ["content", "state", "id"],
-});
+const text = ref(props.content);
+
+function cancelEdit() {
+  store.deactivateEditMode();
+}
+function endEditing() {
+  emit("stopEditing", text.value);
+}
 </script>
 
 <style lang="scss" scoped>

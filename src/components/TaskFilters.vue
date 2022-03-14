@@ -17,57 +17,43 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { useStore } from "../store/store";
 import { typeFilter } from "../types/type";
+import { computed } from "vue";
 
-export default defineComponent({
-  name: "TaskFilters",
-  setup() {
-    const store = useStore();
+const store = useStore();
 
-    return { store };
+const filterArray = [
+  {
+    type: "all" as typeFilter,
+    desc: "All",
   },
-  data() {
-    return {
-      filterArray: [
-        {
-          type: "all" as typeFilter,
-          desc: "All",
-        },
-        {
-          type: "active" as typeFilter,
-          desc: "Active",
-        },
-        {
-          type: "completed" as typeFilter,
-          desc: "Completed",
-        },
-      ],
-    };
+  {
+    type: "active" as typeFilter,
+    desc: "Active",
   },
-  methods: {
-    isActiveFilter(filterType: typeFilter): boolean {
-      return this.store.taskFilter === filterType;
-    },
-    setFilter(filterType: typeFilter) {
-      this.store.setFilter(filterType);
-    },
-    clearCompleted() {
-      this.store.clearCompleted().catch((err) => {
-        console.log(err);
-        this.store.setIsBusy(false);
-        this.store.setErrorMessage("clearing completed tasks");
-      });
-    },
+  {
+    type: "completed" as typeFilter,
+    desc: "Completed",
   },
-  computed: {
-    itemsLeft(): string {
-      return `${this.store.itemsCounter} items left`;
-    },
-  },
-});
+];
+
+const itemsLeft = computed(() => `${store.itemsCounter} items left`);
+
+function isActiveFilter(filterType: typeFilter): boolean {
+  return store.taskFilter === filterType;
+}
+function setFilter(filterType: typeFilter) {
+  store.setFilter(filterType);
+}
+function clearCompleted() {
+  store.clearCompleted().catch((err) => {
+    console.log(err);
+    store.setIsBusy(false);
+    store.setErrorMessage("clearing completed tasks");
+  });
+}
 </script>
 
 <style lang="scss">

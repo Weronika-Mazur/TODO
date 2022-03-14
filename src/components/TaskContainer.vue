@@ -7,26 +7,12 @@
   </main>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import TaskCreator from "./TaskCreator.vue";
 import TaskList from "./TaskList.vue";
 import TaskFilters from "./TaskFilters.vue";
 import ErrorBanner from "./ErrorBanner.vue";
 import { useStore } from "../store/store";
 
-export default defineComponent({
-  name: "TaskContainer",
-  setup() {
-    const store = useStore();
-
-    return { store };
-  },
-  components: {
-    TaskCreator,
-    TaskList,
-    TaskFilters,
-    ErrorBanner,
-  },
-});
+const store = useStore();
 </script>

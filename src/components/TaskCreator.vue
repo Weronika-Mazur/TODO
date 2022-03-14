@@ -17,51 +17,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import PlusIcon from "../assets/PlusIcon.vue";
 import BusyIcon from "../assets/BusyIcon.vue";
 import { useStore } from "../store/store";
 import { typeTaskContent } from "../types/type";
 
-export default defineComponent({
-  name: "TaskCreator",
-  setup() {
-    const store = useStore();
+const store = useStore();
+const text = ref("");
 
-    return { store };
-  },
-  components: {
-    PlusIcon,
-    BusyIcon,
-  },
-  methods: {
-    addItemToTaskList() {
-      if (this.text !== "") {
-        const newTask = {
-          content: this.text,
-          state: "active",
-        } as typeTaskContent;
-
-        this.store
-          .addTask(newTask)
-          .then(() => {
-            this.text = "";
-          })
-          .catch((err) => {
-            console.log(err);
-            this.store.setIsBusy(false);
-            this.store.setErrorMessage("adding the task");
-          });
-      }
-    },
-  },
-  data() {
-    return {
-      text: "",
+function addItemToTaskList() {
+  if (text.value !== "") {
+    const newTask: typeTaskContent = {
+      content: text.value,
+      state: "active",
     };
-  },
-});
+
+    store
+      .addTask(newTask)
+      .then(() => {
+        text.value = "";
+      })
+      .catch((err) => {
+        console.log(err);
+        store.setIsBusy(false);
+        store.setErrorMessage("adding the task");
+      });
+  }
+}
 </script>
 
 <style lang="scss">

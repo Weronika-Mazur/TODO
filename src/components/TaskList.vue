@@ -21,67 +21,58 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import TaskItem from "./TaskItem.vue";
 import TaskEdit from "./TaskEdit.vue";
 import { useStore } from "../store/store";
 import { typeTask } from "../types/type";
 
-export default defineComponent({
-  name: "TaskList",
-  setup() {
-    const store = useStore();
+const store = useStore();
 
-    return { store };
-  },
-  components: {
-    TaskItem,
-    TaskEdit,
-  },
-  computed: {
-    taskArray(): typeTask[] {
-      return this.store.taskArrayWithFilters;
-    },
-  },
-  methods: {
-    toggleItemState(task: typeTask) {
-      const taskStatus = task.state === "active" ? "completed" : "active";
-      this.store.changeTask({
-        _id: task._id,
-        state: taskStatus,
-      });
-    },
-    deleteTaskItem(taskId: string) {
-      this.store.deleteTask(taskId).catch((err) => {
-        console.log(err);
-        this.store.setIsBusy(false);
-        this.store.setErrorMessage("deleting task");
-      });
-    },
-    isEditModeActive(taskId: string) {
-      return taskId === this.store.editMode.id;
-    },
-    endEditing(taskId: string, taskText: string) {
-      this.store
-        .changeTask({
-          _id: taskId,
-          content: taskText,
-        })
-        .then(() => {
-          this.store.deactivateEditMode();
-        })
-        .catch((err) => {
-          console.log(err);
-          this.store.setIsBusy(false);
-          this.store.setErrorMessage("editing task");
-        });
-    },
-    editTaskItem(taskId: string) {
-      this.store.activateEditMode(taskId);
-    },
-  },
-});
+const taskArray = computed(() => store.taskArrayWithFilters);
+
+function toggleItemState(task: typeTask) {
+  const taskStatus = task.state === "active" ? "completed" : "active";
+  store
+    .changeTask({
+      _id: task._id,
+      state: taskStatus,
+    })
+    .catch((err) => {
+      console.log(err);
+      store.setIsBusy(false);
+      store.setErrorMessage("changing tasks state");
+    });
+}
+function deleteTaskItem(taskId: string) {
+  store.deleteTask(taskId).catch((err) => {
+    console.log(err);
+    store.setIsBusy(false);
+    store.setErrorMessage("deleting task");
+  });
+}
+function isEditModeActive(taskId: string) {
+  return taskId === store.editMode.id;
+}
+function endEditing(taskId: string, taskText: string) {
+  store
+    .changeTask({
+      _id: taskId,
+      content: taskText,
+    })
+    .then(() => {
+      store.deactivateEditMode();
+    })
+    .catch((err) => {
+      console.log(err);
+      store.setIsBusy(false);
+      store.setErrorMessage("editing task");
+    });
+}
+function editTaskItem(taskId: string) {
+  store.activateEditMode(taskId);
+}
 </script>
 
 <style>
