@@ -56,7 +56,7 @@ function clearCompleted() {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nav-bar {
   display: flex;
   justify-content: space-between;

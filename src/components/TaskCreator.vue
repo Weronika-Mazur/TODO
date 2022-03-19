@@ -1,5 +1,5 @@
 <template>
-  <div class="task-creator" v-if="!store.isBusy">
+  <div class="task-creator" v-if="!isBusy">
     <button class="task-creator__plus-button" @click="addItemToTaskList">
       <div class="task-creator__circle">
         <PlusIcon class="task-creator__plus-icon" />
@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import PlusIcon from "../assets/PlusIcon.vue";
 import BusyIcon from "../assets/BusyIcon.vue";
 import { useStore } from "../store/store";
@@ -27,24 +27,22 @@ import { typeTaskContent } from "../types/type";
 const store = useStore();
 const text = ref("");
 
-function addItemToTaskList() {
-  if (text.value !== "") {
-    const newTask: typeTaskContent = {
-      content: text.value,
-      state: "active",
-    };
+const isBusy = computed(() => store.isBusy);
 
-    store
-      .addTask(newTask)
-      .then(() => {
+async function addItemToTaskList() {
+  try {
+    if (text.value !== "") {
+      const newTask: typeTaskContent = {
+        content: text.value,
+        state: "active",
+      };
+
+      const data = await store.addTask(newTask);
+      if (data) {
         text.value = "";
-      })
-      .catch((err) => {
-        console.log(err);
-        store.setIsBusy(false);
-        store.setErrorMessage("adding the task");
-      });
-  }
+      }
+    }
+  } catch (err) {}
 }
 </script>
 

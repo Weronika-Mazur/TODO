@@ -46,11 +46,7 @@ function toggleItemState(task: typeTask) {
     });
 }
 function deleteTaskItem(taskId: string) {
-  store.deleteTask(taskId).catch((err) => {
-    console.log(err);
-    store.setIsBusy(false);
-    store.setErrorMessage("deleting task");
-  });
+  store.deleteTask(taskId);
 }
 function isEditModeActive(taskId: string) {
   return taskId === store.editMode.id;

@@ -17,7 +17,7 @@ import { useStore } from "../store/store";
 const store = useStore();
 
 function closeBanner() {
-  store.setErrorMessage("");
+  store.setErrorMessage();
 }
 
 const errorMessage = computed(
@@ -29,11 +29,12 @@ const errorMessage = computed(
 .error-banner {
   position: fixed;
   left: 10%;
-  top: 24px;
+  bottom: 24px;
   width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 
   &__container {
     background-color: var(--bright-blue);

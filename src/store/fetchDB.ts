@@ -7,51 +7,82 @@ export default class FetchDB {
     this.url = url;
   }
 
-  async get() {
-    const data = await fetch(this.url);
-    const response = await data.json();
+  getToken() {
+    return `Bearer ${localStorage.getItem("jwt")}`;
+  }
 
-    return response;
+  async get() {
+    try {
+      const data = await fetch(this.url, {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          Authorization: this.getToken(),
+        },
+      });
+      if (data) {
+        const response = await data.json();
+        return response;
+      }
+    } catch (err) {}
   }
 
   async delete(id?: string) {
-    const url = id
-      ? `${this.url}/delete-task/${id}`
-      : `${this.url}/clear-tasks`;
+    try {
+      const url = id
+        ? `${this.url}/delete-task/${id}`
+        : `${this.url}/clear-tasks`;
 
-    const data = await fetch(url, { method: "DELETE" });
-    const response = await data.json();
-
-    return response;
+      const data = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "content-type": "application/json",
+          Authorization: this.getToken(),
+        },
+      });
+      if (data) {
+        const response = await data.json();
+        return response;
+      }
+    } catch (err) {}
   }
 
   async post(newTask: typeTaskContent) {
-    const url = `${this.url}/add-task`;
+    try {
+      const url = `${this.url}/add-task`;
 
-    const data = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(newTask),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-    const response = await data.json();
-
-    return response;
+      const data = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(newTask),
+        headers: {
+          "content-type": "application/json",
+          Authorization: this.getToken(),
+        },
+      });
+      if (data) {
+        const response = await data.json();
+        return response;
+      }
+    } catch (err) {}
   }
 
   async put(changes: typeTaskContent) {
-    const url = `${this.url}/change-task/${changes._id}`;
+    try {
+      const url = `${this.url}/change-task/${changes._id}`;
 
-    const data = await fetch(url, {
-      method: "PUT",
-      body: JSON.stringify(changes),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-    const response = await data.json();
+      const data = await fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(changes),
+        headers: {
+          "content-type": "application/json",
+          Authorization: this.getToken(),
+        },
+      });
 
-    return response;
+      if (data) {
+        const response = await data.json();
+        return response;
+      }
+    } catch (err) {}
   }
 }

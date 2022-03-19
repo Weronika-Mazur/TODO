@@ -1,36 +1,16 @@
 <template>
+  <ErrorBanner v-if="errorMessage" />
   <div class="background-img"></div>
-  <div class="container">
-    <Header />
-    <TaskContainer />
-  </div>
+  <router-view />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import Header from "./components/Header.vue";
-import TaskContainer from "./components/TaskContainer.vue";
+<script setup lang="ts">
+import ErrorBanner from "./components/ErrorBanner.vue";
 import { useStore } from "./store/store";
+import { computed } from "vue";
+const store = useStore();
 
-export default defineComponent({
-  name: "App",
-  components: {
-    Header,
-    TaskContainer,
-  },
-  setup() {
-    const store = useStore();
-
-    return { store };
-  },
-  created() {
-    this.store.fetchTaskArray().catch((err) => {
-      console.log(err);
-      this.store.setIsBusy(false);
-      this.store.setErrorMessage("trying to get tasks");
-    });
-  },
-});
+const errorMessage = computed(() => store.errorMessage !== "");
 </script>
 
 <style lang="scss">
@@ -38,21 +18,21 @@ export default defineComponent({
 
 :root {
   --bright-blue: #3a7bfd;
-  --check-background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+  --check-background: linear-gradient(#57ddff, #c058f3);
 
-  --very-light-grey: hsl(0, 0%, 98%);
-  --very-light-grayish-blue: hsl(236, 33%, 92%);
-  --light-grayish-blue: hsl(233, 11%, 84%);
-  --dark-grayish-blue: hsl(236, 9%, 61%);
-  --very-dark-grayish-blue: hsl(235, 19%, 35%);
+  --very-light-grey: #fafafa;
+  --very-light-grayish-blue: #e4e5f1;
+  --light-grayish-blue: #d2d3db;
+  --dark-grayish-blue: #9394a5;
+  --very-dark-grayish-blue: #484b6a;
 
-  --very-dark-blue: hsl(235, 21%, 11%);
-  --very-dark-desaturated-blue: hsl(235, 24%, 19%);
-  --light-grayish-blue-dark-mode: hsl(234, 39%, 85%);
-  --light-grayish-blue-hover: hsl(236, 33%, 92%);
-  --dark-grayish-blue-dark-mode: hsl(234, 11%, 52%);
-  --very-dark-grayish-blue-dark-mode: hsl(233, 14%, 35%);
-  --very-dark-grayish-blue-dark-mode-second: hsl(237, 14%, 26%);
+  --very-dark-blue: #161722;
+  --very-dark-desaturated-blue: #25273c;
+  --light-grayish-blue-dark-mode: #cacde8;
+  --light-grayish-blue-hover: #e4e5f1;
+  --dark-grayish-blue-dark-mode: #777a92;
+  --very-dark-grayish-blue-dark-mode: #4d5066;
+  --very-dark-grayish-blue-dark-mode-second: #393a4c;
 }
 
 body {
@@ -83,11 +63,5 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.container {
-  width: 640px;
-  margin-top: 80px;
-  margin-bottom: 74px;
 }
 </style>

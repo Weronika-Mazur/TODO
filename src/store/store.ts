@@ -7,7 +7,7 @@ import {
   typeFilter,
 } from "../types/type";
 
-const DB_URL = "http://localhost:3000/todos";
+const DB_URL = "http://localhost:3030/todos";
 
 const fetchDB = new FetchDB(DB_URL);
 
@@ -22,6 +22,7 @@ export const useStore = defineStore("main", {
         active: false,
         id: "",
       } as typeEditMode,
+      username: "" as string,
     };
   },
   getters: {
@@ -47,8 +48,11 @@ export const useStore = defineStore("main", {
     setIsBusy(value: boolean) {
       this.isBusy = value;
     },
-    setErrorMessage(value: string) {
-      this.errorMessage = value;
+    setErrorMessage(value?: string) {
+      this.errorMessage = value || "";
+    },
+    setUsername(username?: string) {
+      this.username = username || "";
     },
     activateEditMode(id: string) {
       this.editMode = {
@@ -63,47 +67,77 @@ export const useStore = defineStore("main", {
       };
     },
     async fetchTaskArray() {
-      this.setIsBusy(true);
-      const data = await fetchDB.get();
+      try {
+        this.setIsBusy(true);
+        const data = await fetchDB.get();
+        if (data) {
+          this.setTaskArray(data);
+          this.setErrorMessage("");
 
-      this.setTaskArray(data);
-      this.setIsBusy(false);
-
-      this.setErrorMessage("");
-
-      return data;
+          return data;
+        } else {
+          throw "Couldn't get tasks";
+        }
+      } catch (err) {
+        this.setErrorMessage("trying to get tasks");
+      } finally {
+        this.setIsBusy(false);
+      }
     },
     async clearCompleted() {
       this.setIsBusy(true);
       const data = await fetchDB.delete();
 
-      this.fetchTaskArray();
-
-      return data;
+      if (data) {
+        this.fetchTaskArray();
+        return data;
+      } else {
+        throw "Couldn't clear tasks";
+      }
     },
     async addTask(newTask: typeTaskContent) {
-      this.setIsBusy(true);
-      const data = await fetchDB.post(newTask);
+      try {
+        this.setIsBusy(true);
+        const data = await fetchDB.post(newTask);
 
-      this.fetchTaskArray();
-
-      return data;
+        if (data) {
+          this.fetchTaskArray();
+          return data;
+        } else {
+          throw "Couldn't add task";
+        }
+      } catch (err) {
+        this.setErrorMessage("adding the task");
+      } finally {
+        this.setIsBusy(false);
+      }
     },
     async changeTask(changes: typeTaskContent) {
       this.setIsBusy(true);
       const data = await fetchDB.put(changes);
 
-      this.fetchTaskArray();
-
-      return data;
+      if (data) {
+        this.fetchTaskArray();
+        return data;
+      } else {
+        throw "Couldn't change task";
+      }
     },
     async deleteTask(taskId: string) {
-      this.setIsBusy(true);
-      const data = await fetchDB.delete(taskId);
-
-      this.fetchTaskArray();
-
-      return data;
+      try {
+        this.setIsBusy(true);
+        const data = await fetchDB.delete(taskId);
+        if (data) {
+          this.fetchTaskArray();
+          return data;
+        } else {
+          throw "Couldn't delete task";
+        }
+      } catch (err) {
+        this.setErrorMessage("deleting task");
+      } finally {
+        this.setIsBusy(false);
+      }
     },
   },
 });
