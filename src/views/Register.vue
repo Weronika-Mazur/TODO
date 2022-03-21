@@ -7,44 +7,58 @@
     <h1 class="sign-up__title">Sign Up</h1>
 
     <Form class="sign-up__form" :validation-schema="schema" @submit="onSubmit">
-      <label for="email" class="sign-up__label">Email:</label>
+      <label
+        for="email"
+        class="sign-up__label animate__animated animate__fadeInUp"
+        >Email:</label
+      >
       <Field
         name="email"
         type="email"
         id="email"
-        class="sign-up__input"
+        class="sign-up__input animate__animated animate__fadeInUp"
         placeholder="Email..."
         required
       >
       </Field>
       <ErrorMessage name="email" class="sign-up__error" />
 
-      <label for="signupPassword" class="sign-up__label">Password:</label>
+      <label
+        for="signupPassword"
+        class="sign-up__label animate__animated animate__fadeInUp"
+        >Password:</label
+      >
       <Field
         name="password"
         type="password"
         id="signupPassword"
-        class="sign-up__input"
+        class="sign-up__input animate__animated animate__fadeInUp"
         placeholder="Password..."
         required
       >
       </Field>
       <ErrorMessage name="password" class="sign-up__error" />
 
-      <label for="repeatPassword" class="sign-up__label"
+      <label
+        for="repeatPassword"
+        class="sign-up__label animate__animated animate__fadeInUp"
         >Repeat password:</label
       >
       <Field
         name="repeatPassword"
         type="password"
         id="repeatPassword"
-        class="sign-up__input"
+        class="sign-up__input animate__animated animate__fadeInUp"
         placeholder="Repeat password..."
       >
       </Field>
       <ErrorMessage name="repeatPassword" class="sign-up__error" />
 
-      <button class="sign-up__sign-up-button">Create an account</button>
+      <button
+        class="sign-up__sign-up-button animate__animated animate__fadeInUp"
+      >
+        Create an account
+      </button>
     </Form>
     <p class="sign-up__login">
       Already have an account?
@@ -159,6 +173,7 @@ async function onSubmit(values: { email?: string; password?: string }) {
     font-family: "Josefin Sans", sans-serif;
     font-size: 18px;
     font-weight: 700;
+    cursor: pointer;
   }
 
   &__label {

@@ -1,5 +1,11 @@
 <template>
-  <ErrorBanner v-if="errorMessage" />
+  <Transition
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__backOutDown"
+  >
+    <ErrorBanner v-if="errorMessage" />
+  </Transition>
+
   <div class="background-img"></div>
   <router-view />
 </template>

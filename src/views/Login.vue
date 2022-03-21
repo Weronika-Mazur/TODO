@@ -7,30 +7,40 @@
     <h1 class="login__title">Sign In</h1>
 
     <Form class="login__form" :validation-schema="schema" @submit="onSubmit">
-      <label for="email" class="login__label">Email:</label>
+      <label
+        for="email"
+        class="login__label animate__animated animate__fadeInUp"
+        >Email:</label
+      >
       <Field
         name="email"
         type="email"
         id="email"
-        class="login__input"
+        class="login__input animate__animated animate__fadeInUp"
         placeholder="Email..."
         required
       />
       <ErrorMessage name="email" class="login__error" />
 
-      <label for="password" class="login__label">Password:</label>
+      <label
+        for="password"
+        class="login__label animate__animated animate__fadeInUp"
+        >Password:</label
+      >
 
       <Field
         name="password"
         type="password"
         id="password"
-        class="login__input"
+        class="login__input animate__animated animate__fadeInUp"
         placeholder="Password..."
         required
       />
       <ErrorMessage name="password" class="login__error" />
 
-      <button class="login__login-button">Login</button>
+      <button class="login__login-button animate__animated animate__fadeInUp">
+        Login
+      </button>
     </Form>
     <p class="login__sign-up">
       Don't have an account?
@@ -137,6 +147,7 @@ async function onSubmit(values: { email?: string; password?: string }) {
     font-family: "Josefin Sans", sans-serif;
     font-size: 18px;
     font-weight: 700;
+    cursor: pointer;
   }
 
   &__label {

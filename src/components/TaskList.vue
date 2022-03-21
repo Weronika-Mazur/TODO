@@ -1,23 +1,27 @@
 <template>
   <section class="task-list">
-    <div v-for="task in taskArray">
-      <TaskItem
-        v-if="!isEditModeActive(task._id)"
-        :state="task.state"
-        :content="task.content"
-        :key="task._id"
-        @toggleState="toggleItemState(task)"
-        @deleteTask="deleteTaskItem(task._id)"
-        @editTask="editTaskItem(task._id)"
-      />
-      <TaskEdit
-        v-else
-        :state="task.state"
-        :content="task.content"
-        :key="task._id + 'edit'"
-        @stopEditing="(taskText: string) => endEditing(task._id, taskText)"
-      />
-    </div>
+    <TransitionGroup
+      enter-active-class="animate__animated animate__fadeInUp"
+      leave-active-class="animate__animated animate__fadeOutDown"
+    >
+      <div v-for="task in taskArray" :key="task._id">
+        <TaskItem
+          v-if="!isEditModeActive(task._id)"
+          :state="task.state"
+          :content="task.content"
+          @toggleState="toggleItemState(task)"
+          @deleteTask="deleteTaskItem(task._id)"
+          @editTask="editTaskItem(task._id)"
+        />
+        <TaskEdit
+          v-else
+          :state="task.state"
+          :content="task.content"
+          @stopEditing="(taskText: string) =>
+        endEditing(task._id, taskText)"
+        />
+      </div>
+    </TransitionGroup>
   </section>
 </template>
 
