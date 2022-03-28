@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import FetchDB from "./fetchDB";
+import TodoAPI from "./todoAPI";
 import {
   typeTask,
   typeTaskContent,
@@ -9,7 +9,7 @@ import {
 
 const DB_URL = "http://localhost:3030/todos";
 
-const fetchDB = new FetchDB(DB_URL);
+const todoAPI = new TodoAPI(DB_URL);
 
 export const useStore = defineStore("main", {
   state: () => {
@@ -69,7 +69,7 @@ export const useStore = defineStore("main", {
     async fetchTaskArray() {
       try {
         this.setIsBusy(true);
-        const data = await fetchDB.get();
+        const data = await todoAPI.getTodoList();
         if (data) {
           this.setTaskArray(data);
           this.setErrorMessage("");
@@ -86,7 +86,7 @@ export const useStore = defineStore("main", {
     },
     async clearCompleted() {
       this.setIsBusy(true);
-      const data = await fetchDB.delete();
+      const data = await todoAPI.clearCompleted();
 
       if (data) {
         this.fetchTaskArray();
@@ -98,7 +98,7 @@ export const useStore = defineStore("main", {
     async addTask(newTask: typeTaskContent) {
       try {
         this.setIsBusy(true);
-        const data = await fetchDB.post(newTask);
+        const data = await todoAPI.addTask(newTask);
 
         if (data) {
           this.fetchTaskArray();
@@ -114,7 +114,7 @@ export const useStore = defineStore("main", {
     },
     async changeTask(changes: typeTaskContent) {
       this.setIsBusy(true);
-      const data = await fetchDB.put(changes);
+      const data = await todoAPI.updateTask(changes);
 
       if (data) {
         this.fetchTaskArray();
@@ -126,7 +126,7 @@ export const useStore = defineStore("main", {
     async deleteTask(taskId: string) {
       try {
         this.setIsBusy(true);
-        const data = await fetchDB.delete(taskId);
+        const data = await todoAPI.deleteTask(taskId);
         if (data) {
           this.fetchTaskArray();
           return data;
