@@ -1,20 +1,37 @@
-interface typeTask {
+export interface Task {
   _id: string;
   content: string;
   state: "completed" | "active";
 }
 
-interface typeTaskContent {
+export interface TaskContent {
   _id?: string;
   content?: string;
   state?: "completed" | "active";
 }
 
-interface typeEditMode {
+export interface EditMode {
   active: boolean;
   id: string;
 }
 
-type typeFilter = "all" | "active" | "completed";
+export interface FormValues {
+  email?: string;
+  password?: string;
+}
 
-export { typeTask, typeTaskContent, typeEditMode, typeFilter };
+export interface User {
+  _id: string;
+  email: string;
+  password: string;
+  todo: Task[];
+  token?: string;
+  error?: string;
+}
+
+export interface FilterArray {
+  type: Filter;
+  desc: string;
+}
+
+export type Filter = "all" | "active" | "completed";

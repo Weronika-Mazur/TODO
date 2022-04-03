@@ -19,25 +19,28 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+
 import PlusIcon from "../assets/PlusIcon.vue";
 import BusyIcon from "../assets/BusyIcon.vue";
-import { useStore } from "../store/store";
-import { typeTaskContent } from "../types/type";
 
-const store = useStore();
+import { TaskContent } from "../types/type";
+import { useTodoStore } from "../store/todoStore";
+
+const todoStore = useTodoStore();
+
 const text = ref("");
 
-const isBusy = computed(() => store.isBusy);
+const isBusy = computed(() => todoStore.isLoading);
 
 async function addItemToTaskList() {
   try {
     if (text.value !== "") {
-      const newTask: typeTaskContent = {
+      const newTask: TaskContent = {
         content: text.value,
         state: "active",
       };
 
-      const data = await store.addTask(newTask);
+      const data = await todoStore.addTask(newTask);
       if (data) {
         text.value = "";
       }

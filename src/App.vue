@@ -11,12 +11,14 @@
 </template>
 
 <script setup lang="ts">
-import ErrorBanner from "./components/ErrorBanner.vue";
-import { useStore } from "./store/store";
 import { computed } from "vue";
-const store = useStore();
 
-const errorMessage = computed(() => store.errorMessage !== "");
+import ErrorBanner from "./components/ErrorBanner.vue";
+
+import { useTodoStore } from "./store/todoStore";
+const todoStore = useTodoStore();
+
+const errorMessage = computed(() => todoStore.errorMessage);
 </script>
 
 <style lang="scss">

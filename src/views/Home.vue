@@ -8,18 +8,27 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue";
+import jwt_decode from "jwt-decode";
+import { useRouter } from "vue-router";
+
 import NavBar from "../components/NavBar.vue";
 import TaskContainer from "../components/TaskContainer.vue";
-import { useStore } from "../store/store";
-import jwt_decode from "jwt-decode";
 
-const store = useStore();
+import { useTodoStore } from "../store/todoStore";
+import { useUserStore } from "../store/userStore";
+
+const router = useRouter();
+const todoStore = useTodoStore();
+const userStore = useUserStore();
+
 onMounted(() => {
-  store.fetchTaskArray();
   const token = localStorage.getItem("jwt");
   if (token) {
-    const decoded: { email: string } = jwt_decode(token);
-    store.setUsername(decoded.email);
+    const decoded: { _id: string; email: string } = jwt_decode(token);
+    todoStore.fetchTaskArray();
+    userStore.setUsername(decoded.email);
+  } else {
+    router.push({ name: "Login" });
   }
 });
 </script>

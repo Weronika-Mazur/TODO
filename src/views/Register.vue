@@ -6,7 +6,7 @@
 
     <h1 class="sign-up__title">Sign Up</h1>
 
-    <Form class="sign-up__form" :validation-schema="schema" @submit="onSubmit">
+    <Form class="sign-up__form" :validation-schema="schema" @submit="register">
       <label
         for="email"
         class="sign-up__label animate__animated animate__fadeInUp"
@@ -70,15 +70,15 @@
 </template>
 
 <script setup lang="ts">
-import UserIcon from "../assets/UserIcon.vue";
-import { useRouter } from "vue-router";
-import { useStore } from "../store/store";
-import { Field, Form, ErrorMessage } from "vee-validate";
-import userHandling from "../helpers/userHandling";
 import * as yup from "yup";
+import { Field, Form, ErrorMessage } from "vee-validate";
 
-const router = useRouter();
-const store = useStore();
+import UserIcon from "../assets/UserIcon.vue";
+
+import { FormValues } from "../types/type";
+import { useUserStore } from "../store/userStore";
+
+const userStore = useUserStore();
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required").email("Invalid email"),
@@ -92,33 +92,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Passwords don't match"),
 });
 
-const url = "http://localhost:3030/User/Register";
-
-async function onSubmit(values: { email?: string; password?: string }) {
-  try {
-    const response = await userHandling(values, url);
-
-    if (!response) {
-      throw "Cannot connect to server";
-    }
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    const { token } = response;
-
-    if (token) {
-      localStorage.setItem("jwt", token);
-      store.setUsername(values.email);
-      router.push({ name: "Home" });
-    }
-  } catch (e: any) {
-    const error = e.message || e;
-    const errorMessage = `signing up. ${error}`;
-    store.setErrorMessage(errorMessage);
-  }
-}
+const register = (data: FormValues) => userStore.register(data);
 </script>
 
 <style lang="scss">

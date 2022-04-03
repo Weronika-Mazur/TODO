@@ -6,7 +6,7 @@
 
     <h1 class="login__title">Sign In</h1>
 
-    <Form class="login__form" :validation-schema="schema" @submit="onSubmit">
+    <Form class="login__form" :validation-schema="schema" @submit="login">
       <label
         for="email"
         class="login__label animate__animated animate__fadeInUp"
@@ -52,47 +52,22 @@
 </template>
 
 <script setup lang="ts">
-import UserIcon from "../assets/UserIcon.vue";
 import { Field, Form, ErrorMessage } from "vee-validate";
 import { object, string } from "yup";
-import userHandling from "../helpers/userHandling";
-import { useRouter } from "vue-router";
-import { useStore } from "../store/store";
 
-const router = useRouter();
-const store = useStore();
+import UserIcon from "../assets/UserIcon.vue";
+
+import { FormValues } from "../types/type";
+import { useUserStore } from "../store/userStore";
+
+const userStore = useUserStore();
 
 const schema = object().shape({
   email: string().required("Email is required").email("Invalid email"),
   password: string().required("Password is required"),
 });
-const url = "http://localhost:3030/User/Login";
 
-async function onSubmit(values: { email?: string; password?: string }) {
-  try {
-    const response = await userHandling(values, url);
-
-    if (!response) {
-      throw "Cannot connect to server";
-    }
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    const { token } = response;
-
-    if (token) {
-      localStorage.setItem("jwt", token);
-      store.setUsername(values.email);
-      router.push({ name: "Home" });
-    }
-  } catch (e: any) {
-    const error = e.message || e;
-    const errorMessage = `loging in. ${error}`;
-    store.setErrorMessage(errorMessage);
-  }
-}
+const login = (data: FormValues) => userStore.login(data);
 </script>
 
 <style lang="scss">
