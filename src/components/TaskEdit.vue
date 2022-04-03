@@ -8,29 +8,32 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from "vue";
+
 import CrossIcon from "../assets/CrossIcon.vue";
 
-export default {
-  name: "TaskEdit",
-  emits: ["stopEditing"],
-  methods: {
-    cancelEdit() {
-      this.text = this.content;
-      this.endEditing();
-    },
-    endEditing() {
-      this.$emit("stopEditing", this.text);
-    },
-  },
-  data() {
-    return {
-      text: this.content,
-    };
-  },
-  props: ["content", "state", "id"],
-  components: { CrossIcon },
-};
+import { useTodoStore } from "../store/todoStore";
+
+interface Emits {
+  (e: "stopEditing", text: string): void;
+}
+interface Props {
+  content: string;
+  state: "completed" | "active";
+}
+const store = useTodoStore();
+const emit = defineEmits<Emits>();
+const props = defineProps<Props>();
+
+const text = ref(props.content);
+
+function cancelEdit() {
+  store.deactivateEditMode();
+}
+function endEditing() {
+  emit("stopEditing", text.value);
+}
 </script>
 
 <style lang="scss" scoped>
