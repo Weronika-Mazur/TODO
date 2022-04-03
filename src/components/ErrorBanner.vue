@@ -11,17 +11,18 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import CrossIcon from "../assets/CrossIcon.vue";
-import { useStore } from "../store/store";
 
-const store = useStore();
+import CrossIcon from "../assets/CrossIcon.vue";
+
+import { useTodoStore } from "../store/todoStore";
+const todoStore = useTodoStore();
 
 function closeBanner() {
-  store.setErrorMessage();
+  todoStore.setErrorMessage();
 }
 
 const errorMessage = computed(
-  () => `Error occurred while ${store.errorMessage}!`
+  () => `Error occurred while ${todoStore.errorMessage}!`
 );
 </script>
 

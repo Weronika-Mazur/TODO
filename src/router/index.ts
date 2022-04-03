@@ -5,7 +5,7 @@ import Register from "../views/Register.vue";
 
 const routes = [
   {
-    path: "/Home",
+    path: "/home",
     name: "Home",
     component: Home,
     meta: {
@@ -13,12 +13,12 @@ const routes = [
     },
   },
   {
-    path: "/Login",
+    path: "/login",
     name: "Login",
     component: Login,
   },
   {
-    path: "/Register",
+    path: "/register",
     name: "Register",
     component: Register,
   },

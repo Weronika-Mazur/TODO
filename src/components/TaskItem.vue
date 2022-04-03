@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
 import CheckIcon from "../assets/CheckIcon.vue";
 import CrossIcon from "../assets/CrossIcon.vue";
 import EditIcon from "../assets/EditIcon.vue";

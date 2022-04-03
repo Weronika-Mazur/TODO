@@ -10,19 +10,24 @@
 </template>
 
 <script setup lang="ts">
-import UserIcon from "../assets/UserIcon.vue";
 import { computed } from "vue";
-import { useStore } from "../store/store";
 import { useRouter } from "vue-router";
 
-const store = useStore();
-const router = useRouter();
+import UserIcon from "../assets/UserIcon.vue";
 
-const username = computed(() => store.username);
+import { useUserStore } from "../store/userStore";
+import { useTodoStore } from "../store/todoStore";
+
+const router = useRouter();
+const userStore = useUserStore();
+const todoStore = useTodoStore();
+
+const username = computed(() => userStore.username);
 
 function logOut() {
   localStorage.removeItem("jwt");
-  store.setUsername();
+  todoStore.setTaskArray();
+  userStore.setUsername();
   router.push({ name: "Login" });
 }
 </script>

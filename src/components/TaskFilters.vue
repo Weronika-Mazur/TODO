@@ -18,39 +18,41 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from "../store/store";
-import { typeFilter } from "../types/type";
 import { computed } from "vue";
 
-const store = useStore();
+import { Filter } from "../types/type";
+
+import { useTodoStore } from "../store/todoStore";
+
+const store = useTodoStore();
 
 const filterArray = [
   {
-    type: "all" as typeFilter,
+    type: "all" as Filter,
     desc: "All",
   },
   {
-    type: "active" as typeFilter,
+    type: "active" as Filter,
     desc: "Active",
   },
   {
-    type: "completed" as typeFilter,
+    type: "completed" as Filter,
     desc: "Completed",
   },
 ];
 
 const itemsLeft = computed(() => `${store.itemsCounter} items left`);
 
-function isActiveFilter(filterType: typeFilter): boolean {
+function isActiveFilter(filterType: Filter): boolean {
   return store.taskFilter === filterType;
 }
-function setFilter(filterType: typeFilter) {
+function setFilter(filterType: Filter) {
   store.setFilter(filterType);
 }
 function clearCompleted() {
   store.clearCompleted().catch((err) => {
     console.log(err);
-    store.setIsBusy(false);
+    store.setIsLoading(false);
     store.setErrorMessage("clearing completed tasks");
   });
 }

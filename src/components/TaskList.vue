@@ -29,14 +29,14 @@
 import { computed } from "vue";
 import TaskItem from "./TaskItem.vue";
 import TaskEdit from "./TaskEdit.vue";
-import { useStore } from "../store/store";
-import { typeTask } from "../types/type";
+import { useTodoStore } from "../store/todoStore";
+import { Task } from "../types/type";
 
-const store = useStore();
+const store = useTodoStore();
 
 const taskArray = computed(() => store.taskArrayWithFilters);
 
-function toggleItemState(task: typeTask) {
+function toggleItemState(task: Task) {
   const taskStatus = task.state === "active" ? "completed" : "active";
   store
     .changeTask({
@@ -45,7 +45,7 @@ function toggleItemState(task: typeTask) {
     })
     .catch((err) => {
       console.log(err);
-      store.setIsBusy(false);
+      store.setIsLoading(false);
       store.setErrorMessage("changing tasks state");
     });
 }
@@ -66,7 +66,7 @@ function endEditing(taskId: string, taskText: string) {
     })
     .catch((err) => {
       console.log(err);
-      store.setIsBusy(false);
+      store.setIsLoading(false);
       store.setErrorMessage("editing task");
     });
 }

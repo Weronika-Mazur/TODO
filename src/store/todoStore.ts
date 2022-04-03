@@ -1,58 +1,53 @@
 import { defineStore } from "pinia";
-import TodoAPI from "./todoAPI";
-import {
-  typeTask,
-  typeTaskContent,
-  typeEditMode,
-  typeFilter,
-} from "../types/type";
+import { todoApi } from "../api/todoAPI";
+import { Task, TaskContent, EditMode, Filter } from "../types/type";
 
-const DB_URL = "http://localhost:3030/todos";
+interface State {
+  taskArray: Task[];
+  taskFilter: Filter;
+  isLoading: boolean;
+  errorMessage: string;
+  editMode: EditMode;
+}
 
-const todoAPI = new TodoAPI(DB_URL);
-
-export const useStore = defineStore("main", {
+export const useTodoStore = defineStore("main", {
   state: () => {
     return {
-      taskArray: [] as typeTask[],
-      taskFilter: "all" as typeFilter,
-      isBusy: true,
+      taskArray: [],
+      taskFilter: "all",
+      isLoading: true,
       errorMessage: "",
       editMode: {
         active: false,
         id: "",
-      } as typeEditMode,
-      username: "" as string,
-    };
+      },
+    } as State;
   },
   getters: {
     taskArrayWithFilters(state) {
       return state.taskFilter === "all"
         ? state.taskArray
         : state.taskArray.filter(
-            (task: typeTask) => task.state === state.taskFilter
+            (task: Task) => task.state === state.taskFilter
           );
     },
     itemsCounter(state): number {
-      return state.taskArray.filter((task: typeTask) => task.state === "active")
+      return state.taskArray.filter((task: Task) => task.state === "active")
         .length;
     },
   },
   actions: {
-    setFilter(filterType: typeFilter) {
+    setFilter(filterType: Filter) {
       this.taskFilter = filterType;
     },
-    setTaskArray(taskArray: typeTask[]) {
-      this.taskArray = taskArray;
+    setTaskArray(taskArray?: Task[]) {
+      this.taskArray = taskArray || [];
     },
-    setIsBusy(value: boolean) {
-      this.isBusy = value;
+    setIsLoading(value: boolean) {
+      this.isLoading = value;
     },
     setErrorMessage(value?: string) {
       this.errorMessage = value || "";
-    },
-    setUsername(username?: string) {
-      this.username = username || "";
     },
     activateEditMode(id: string) {
       this.editMode = {
@@ -68,8 +63,8 @@ export const useStore = defineStore("main", {
     },
     async fetchTaskArray() {
       try {
-        this.setIsBusy(true);
-        const data = await todoAPI.getTodoList();
+        this.setIsLoading(true);
+        const data = await todoApi.getTodoList();
         if (data) {
           this.setTaskArray(data);
           this.setErrorMessage("");
@@ -81,24 +76,30 @@ export const useStore = defineStore("main", {
       } catch (err) {
         this.setErrorMessage("trying to get tasks");
       } finally {
-        this.setIsBusy(false);
+        this.setIsLoading(false);
       }
     },
     async clearCompleted() {
-      this.setIsBusy(true);
-      const data = await todoAPI.clearCompleted();
+      try {
+        this.setIsLoading(true);
+        const data = await todoApi.clearCompleted();
 
-      if (data) {
-        this.fetchTaskArray();
-        return data;
-      } else {
-        throw "Couldn't clear tasks";
+        if (data) {
+          this.fetchTaskArray();
+          return data;
+        } else {
+          throw "Couldn't clear tasks";
+        }
+      } catch (err) {
+        this.setErrorMessage("trying to clear completed tasks");
+      } finally {
+        this.setIsLoading(false);
       }
     },
-    async addTask(newTask: typeTaskContent) {
+    async addTask(newTask: TaskContent) {
       try {
-        this.setIsBusy(true);
-        const data = await todoAPI.addTask(newTask);
+        this.setIsLoading(true);
+        const data = await todoApi.addTask(newTask);
 
         if (data) {
           this.fetchTaskArray();
@@ -109,12 +110,12 @@ export const useStore = defineStore("main", {
       } catch (err) {
         this.setErrorMessage("adding the task");
       } finally {
-        this.setIsBusy(false);
+        this.setIsLoading(false);
       }
     },
-    async changeTask(changes: typeTaskContent) {
-      this.setIsBusy(true);
-      const data = await todoAPI.updateTask(changes);
+    async changeTask(changes: TaskContent) {
+      this.setIsLoading(true);
+      const data = await todoApi.updateTask(changes);
 
       if (data) {
         this.fetchTaskArray();
@@ -125,8 +126,8 @@ export const useStore = defineStore("main", {
     },
     async deleteTask(taskId: string) {
       try {
-        this.setIsBusy(true);
-        const data = await todoAPI.deleteTask(taskId);
+        this.setIsLoading(true);
+        const data = await todoApi.deleteTask(taskId);
         if (data) {
           this.fetchTaskArray();
           return data;
@@ -136,7 +137,7 @@ export const useStore = defineStore("main", {
       } catch (err) {
         this.setErrorMessage("deleting task");
       } finally {
-        this.setIsBusy(false);
+        this.setIsLoading(false);
       }
     },
   },

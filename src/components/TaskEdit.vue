@@ -10,12 +10,21 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import CrossIcon from "../assets/CrossIcon.vue";
-import { useStore } from "../store/store";
 
-const store = useStore();
-const emit = defineEmits(["stopEditing"]);
-const props = defineProps(["content", "state", "id"]);
+import CrossIcon from "../assets/CrossIcon.vue";
+
+import { useTodoStore } from "../store/todoStore";
+
+interface Emits {
+  (e: "stopEditing", text: string): void;
+}
+interface Props {
+  content: string;
+  state: "completed" | "active";
+}
+const store = useTodoStore();
+const emit = defineEmits<Emits>();
+const props = defineProps<Props>();
 
 const text = ref(props.content);
 
