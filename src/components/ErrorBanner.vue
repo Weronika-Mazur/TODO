@@ -9,36 +9,33 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
+
 import CrossIcon from "../assets/CrossIcon.vue";
 
-export default {
-  name: "ErrorBanner",
-  components: {
-    CrossIcon,
-  },
-  methods: {
-    closeBanner() {
-      this.$store.commit("setErrorMessage", "");
-    },
-  },
-  computed: {
-    errorMessage() {
-      return `Error occurred while ${this.$store.state.errorMessage}!`;
-    },
-  },
-};
+import { useTodoStore } from "../store/todoStore";
+const todoStore = useTodoStore();
+
+function closeBanner() {
+  todoStore.setErrorMessage();
+}
+
+const errorMessage = computed(
+  () => `Error occurred while ${todoStore.errorMessage}!`
+);
 </script>
 
 <style lang="scss">
 .error-banner {
   position: fixed;
   left: 10%;
-  top: 24px;
+  bottom: 24px;
   width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 
   &__container {
     background-color: var(--bright-blue);

@@ -21,3 +21,12 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+todo-app-main/style-guide.md
+todo-app-main/design/active-states-dark.jpg
+todo-app-main/design/active-states-light.jpg
+todo-app-main/design/desktop-design-dark.jpg
+todo-app-main/design/desktop-design-light.jpg
+todo-app-main/design/desktop-preview.jpg
+todo-app-main/design/mobile-design-dark.jpg
+todo-app-main/design/mobile-design-light.jpg
+.gitignore

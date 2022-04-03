@@ -17,51 +17,44 @@
   </section>
 </template>
 
-<script>
-export default {
-  name: "TaskFilters",
-  data() {
-    return {
-      filterArray: [
-        {
-          type: "all",
-          desc: "All",
-        },
-        {
-          type: "active",
-          desc: "Active",
-        },
-        {
-          type: "completed",
-          desc: "Completed",
-        },
-      ],
-    };
+<script setup lang="ts">
+import { computed } from "vue";
+
+import { Filter, FilterArray } from "../types/type";
+
+import { useTodoStore } from "../store/todoStore";
+
+const store = useTodoStore();
+
+const filterArray: FilterArray[] = [
+  {
+    type: "all",
+    desc: "All",
   },
-  methods: {
-    isActiveFilter(filterType) {
-      return this.$store.state.taskFilter === filterType;
-    },
-    setFilter(filterType) {
-      this.$store.commit("setFilter", filterType);
-    },
-    clearCompleted() {
-      this.$store.dispatch("clearCompleted").catch((err) => {
-        console.log(err);
-        this.$store.commit("setIsBusy", false);
-        this.$store.commit("setErrorMessage", "clearing completed tasks");
-      });
-    },
+  {
+    type: "active",
+    desc: "Active",
   },
-  computed: {
-    itemsLeft() {
-      return `${this.$store.getters.itemsCounter} items left`;
-    },
+  {
+    type: "completed",
+    desc: "Completed",
   },
-};
+];
+
+const itemsLeft = computed(() => `${store.itemsCounter} items left`);
+
+function isActiveFilter(filterType: Filter): boolean {
+  return store.taskFilter === filterType;
+}
+function setFilter(filterType: Filter) {
+  store.setFilter(filterType);
+}
+function clearCompleted() {
+  store.clearCompleted();
+}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .nav-bar {
   display: flex;
   justify-content: space-between;

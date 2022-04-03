@@ -1,79 +1,72 @@
 <template>
   <section class="task-list">
-    <div v-for="task in taskArray">
-      <TaskItem
-        v-if="!isEditModeActive(task._id)"
-        :state="task.state"
-        :content="task.content"
-        :key="task._id"
-        @toggleState="toggleItemState(task)"
-        @deleteTask="deleteTaskItem(task._id)"
-        @editTask="editTaskItem(task._id)"
-      />
-      <TaskEdit
-        v-else
-        :state="task.state"
-        :content="task.content"
-        :key="task._id"
-        @stopEditing="(taskText) => endEditing(task._id, taskText)"
-      />
-    </div>
+    <TransitionGroup
+      enter-active-class="animate__animated animate__fadeInUp"
+      leave-active-class="animate__animated animate__fadeOutDown"
+    >
+      <div v-for="task in taskArray" :key="task._id">
+        <TaskItem
+          v-if="!isEditModeActive(task._id)"
+          :state="task.state"
+          :content="task.content"
+          @toggleState="toggleItemState(task)"
+          @deleteTask="deleteTaskItem(task._id)"
+          @editTask="editTaskItem(task._id)"
+        />
+        <TaskEdit
+          v-else
+          :state="task.state"
+          :content="task.content"
+          @stopEditing="(taskText: string) =>
+        endEditing(task._id, taskText)"
+        />
+      </div>
+    </TransitionGroup>
   </section>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import TaskItem from "./TaskItem.vue";
 import TaskEdit from "./TaskEdit.vue";
+import { useTodoStore } from "../store/todoStore";
+import { Task } from "../types/type";
 
-export default {
-  name: "TaskList",
-  components: {
-    TaskItem,
-    TaskEdit,
-  },
-  computed: {
-    taskArray() {
-      return this.$store.getters.taskArrayWithFilters;
-    },
-  },
-  methods: {
-    toggleItemState(task) {
-      const taskStatus = task.state === "active" ? "completed" : "active";
-      this.$store.dispatch("changeTask", {
-        _id: task._id,
-        state: taskStatus,
-      });
-    },
-    deleteTaskItem(taskId) {
-      this.$store.dispatch("deleteTask", taskId).catch((err) => {
-        console.log(err);
-        this.$store.commit("setIsBusy", false);
-        this.$store.commit("setErrorMessage", "deleting task");
-      });
-    },
-    isEditModeActive(taskId) {
-      return taskId === this.$store.state.editMode.id;
-    },
-    endEditing(taskId, taskText) {
-      this.$store
-        .dispatch("changeTask", {
-          _id: taskId,
-          content: taskText,
-        })
-        .then(() => {
-          this.$store.commit("deactivateEditMode");
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$store.commit("setIsBusy", false);
-          this.$store.commit("setErrorMessage", "editing task");
-        });
-    },
-    editTaskItem(taskId) {
-      this.$store.commit("activateEditMode", taskId);
-    },
-  },
-};
+const store = useTodoStore();
+
+const taskArray = computed(() => store.taskArrayWithFilters);
+
+function toggleItemState(task: Task) {
+  const taskStatus = task.state === "active" ? "completed" : "active";
+  store.changeTask({
+    _id: task._id,
+    state: taskStatus,
+  });
+}
+function deleteTaskItem(taskId: string) {
+  store.deleteTask(taskId);
+}
+function isEditModeActive(taskId: string) {
+  return taskId === store.editMode.id;
+}
+function endEditing(taskId: string, taskText: string) {
+  store
+    .changeTask({
+      _id: taskId,
+      content: taskText,
+    })
+    .then(() => {
+      store.deactivateEditMode();
+    })
+    .catch((err) => {
+      console.log(err);
+      store.setIsLoading(false);
+      store.setErrorMessage("editing task");
+    });
+}
+function editTaskItem(taskId: string) {
+  store.activateEditMode(taskId);
+}
 </script>
 
 <style>
