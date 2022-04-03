@@ -65,14 +65,15 @@ export const useTodoStore = defineStore("main", {
       try {
         this.setIsLoading(true);
         const data = await todoApi.getTodoList();
-        if (data) {
-          this.setTaskArray(data);
-          this.setErrorMessage("");
 
-          return data;
-        } else {
+        if (!data) {
           throw "Couldn't get tasks";
         }
+
+        this.setTaskArray(data);
+        this.setErrorMessage("");
+
+        return data;
       } catch (err) {
         this.setErrorMessage("trying to get tasks");
       } finally {
@@ -84,12 +85,12 @@ export const useTodoStore = defineStore("main", {
         this.setIsLoading(true);
         const data = await todoApi.clearCompleted();
 
-        if (data) {
-          this.fetchTaskArray();
-          return data;
-        } else {
+        if (!data) {
           throw "Couldn't clear tasks";
         }
+
+        this.fetchTaskArray();
+        return data;
       } catch (err) {
         this.setErrorMessage("trying to clear completed tasks");
       } finally {
@@ -101,12 +102,12 @@ export const useTodoStore = defineStore("main", {
         this.setIsLoading(true);
         const data = await todoApi.addTask(newTask);
 
-        if (data) {
-          this.fetchTaskArray();
-          return data;
-        } else {
+        if (!data) {
           throw "Couldn't add task";
         }
+
+        this.fetchTaskArray();
+        return data;
       } catch (err) {
         this.setErrorMessage("adding the task");
       } finally {
@@ -114,26 +115,33 @@ export const useTodoStore = defineStore("main", {
       }
     },
     async changeTask(changes: TaskContent) {
-      this.setIsLoading(true);
-      const data = await todoApi.updateTask(changes);
+      try {
+        this.setIsLoading(true);
+        const data = await todoApi.updateTask(changes);
 
-      if (data) {
+        if (!data) {
+          throw "Couldn't change task";
+        }
+
         this.fetchTaskArray();
         return data;
-      } else {
-        throw "Couldn't change task";
+      } catch (err) {
+        this.setErrorMessage("changing tasks state");
+      } finally {
+        this.setIsLoading(false);
       }
     },
     async deleteTask(taskId: string) {
       try {
         this.setIsLoading(true);
         const data = await todoApi.deleteTask(taskId);
-        if (data) {
-          this.fetchTaskArray();
-          return data;
-        } else {
+
+        if (!data) {
           throw "Couldn't delete task";
         }
+
+        this.fetchTaskArray();
+        return data;
       } catch (err) {
         this.setErrorMessage("deleting task");
       } finally {

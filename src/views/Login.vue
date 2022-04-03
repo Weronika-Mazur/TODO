@@ -6,11 +6,7 @@
 
     <h1 class="login__title">Sign In</h1>
 
-    <Form
-      class="login__form"
-      :validation-schema="schema"
-      @submit="userStore.login"
-    >
+    <Form class="login__form" :validation-schema="schema" @submit="login">
       <label
         for="email"
         class="login__label animate__animated animate__fadeInUp"
@@ -61,6 +57,7 @@ import { object, string } from "yup";
 
 import UserIcon from "../assets/UserIcon.vue";
 
+import { FormValues } from "../types/type";
 import { useUserStore } from "../store/userStore";
 
 const userStore = useUserStore();
@@ -69,6 +66,8 @@ const schema = object().shape({
   email: string().required("Email is required").email("Invalid email"),
   password: string().required("Password is required"),
 });
+
+const login = (data: FormValues) => userStore.login(data);
 </script>
 
 <style lang="scss">

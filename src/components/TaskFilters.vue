@@ -20,23 +20,23 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { Filter } from "../types/type";
+import { Filter, FilterArray } from "../types/type";
 
 import { useTodoStore } from "../store/todoStore";
 
 const store = useTodoStore();
 
-const filterArray = [
+const filterArray: FilterArray[] = [
   {
-    type: "all" as Filter,
+    type: "all",
     desc: "All",
   },
   {
-    type: "active" as Filter,
+    type: "active",
     desc: "Active",
   },
   {
-    type: "completed" as Filter,
+    type: "completed",
     desc: "Completed",
   },
 ];
@@ -50,11 +50,7 @@ function setFilter(filterType: Filter) {
   store.setFilter(filterType);
 }
 function clearCompleted() {
-  store.clearCompleted().catch((err) => {
-    console.log(err);
-    store.setIsLoading(false);
-    store.setErrorMessage("clearing completed tasks");
-  });
+  store.clearCompleted();
 }
 </script>
 

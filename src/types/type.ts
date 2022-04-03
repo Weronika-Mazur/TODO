@@ -1,26 +1,26 @@
-interface Task {
+export interface Task {
   _id: string;
   content: string;
   state: "completed" | "active";
 }
 
-interface TaskContent {
+export interface TaskContent {
   _id?: string;
   content?: string;
   state?: "completed" | "active";
 }
 
-interface EditMode {
+export interface EditMode {
   active: boolean;
   id: string;
 }
 
-interface FormValues {
+export interface FormValues {
   email?: string;
   password?: string;
 }
 
-interface User {
+export interface User {
   _id: string;
   email: string;
   password: string;
@@ -29,6 +29,9 @@ interface User {
   error?: string;
 }
 
-type Filter = "all" | "active" | "completed";
+export interface FilterArray {
+  type: Filter;
+  desc: string;
+}
 
-export { Task, TaskContent, EditMode, Filter, FormValues, User };
+export type Filter = "all" | "active" | "completed";

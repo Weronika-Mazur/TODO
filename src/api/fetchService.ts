@@ -1,4 +1,4 @@
-class FetchService {
+export class FetchService {
   constructor(private readonly url: string) {}
 
   getToken() {

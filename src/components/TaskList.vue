@@ -38,16 +38,10 @@ const taskArray = computed(() => store.taskArrayWithFilters);
 
 function toggleItemState(task: Task) {
   const taskStatus = task.state === "active" ? "completed" : "active";
-  store
-    .changeTask({
-      _id: task._id,
-      state: taskStatus,
-    })
-    .catch((err) => {
-      console.log(err);
-      store.setIsLoading(false);
-      store.setErrorMessage("changing tasks state");
-    });
+  store.changeTask({
+    _id: task._id,
+    state: taskStatus,
+  });
 }
 function deleteTaskItem(taskId: string) {
   store.deleteTask(taskId);

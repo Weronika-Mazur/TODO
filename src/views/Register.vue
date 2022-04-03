@@ -6,11 +6,7 @@
 
     <h1 class="sign-up__title">Sign Up</h1>
 
-    <Form
-      class="sign-up__form"
-      :validation-schema="schema"
-      @submit="userStore.register"
-    >
+    <Form class="sign-up__form" :validation-schema="schema" @submit="register">
       <label
         for="email"
         class="sign-up__label animate__animated animate__fadeInUp"
@@ -79,6 +75,7 @@ import { Field, Form, ErrorMessage } from "vee-validate";
 
 import UserIcon from "../assets/UserIcon.vue";
 
+import { FormValues } from "../types/type";
 import { useUserStore } from "../store/userStore";
 
 const userStore = useUserStore();
@@ -94,6 +91,8 @@ const schema = yup.object().shape({
     .required("Repeat the password")
     .oneOf([yup.ref("password"), null], "Passwords don't match"),
 });
+
+const register = (data: FormValues) => userStore.register(data);
 </script>
 
 <style lang="scss">

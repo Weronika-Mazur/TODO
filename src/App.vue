@@ -18,7 +18,7 @@ import ErrorBanner from "./components/ErrorBanner.vue";
 import { useTodoStore } from "./store/todoStore";
 const todoStore = useTodoStore();
 
-const errorMessage = computed(() => todoStore.errorMessage !== "");
+const errorMessage = computed(() => todoStore.errorMessage);
 </script>
 
 <style lang="scss">
