@@ -1,19 +1,14 @@
-# todo-list
+# Todo
 
-## Project setup
-```
-npm install
-```
+Todo app with user authentication created with Vue, Pinta, Typescript, SCSS. 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Setup
 
-### Compiles and minifies for production
+To run this project, clone or download the repo and install it locally using npm:
+
 ```
-npm run build
+$ npm install
+$ npm run start
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+App needs backend from [TODO-backend](https://github.com/Weronika-Mazur/TODO-backend) repository.
